@@ -172,8 +172,8 @@ export default function Reports() {
 
   if (!isAuthorized) {
     return (
-      <div className="p-48 text-center bg-surface border border-border rounded max-w-md mx-auto space-y-16 mt-48">
-        <ShieldAlert className="w-48 h-48 text-danger mx-auto" />
+      <div className="p-12 text-center bg-surface border border-border rounded max-w-md mx-auto space-y-4 mt-12">
+        <ShieldAlert className="w-12 h-12 text-danger mx-auto" />
         <h2 className="text-lg font-bold text-text-primary">Access Gated</h2>
         <p className="text-sm text-text-secondary leading-relaxed">
           The Reports & Analytics section is reserved exclusively for Administrators and Asset Managers.
@@ -312,12 +312,12 @@ export default function Reports() {
   };
 
   return (
-    <div className="space-y-24">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-xl font-bold text-text-primary flex items-center gap-8">
-            <BarChart3 className="w-24 h-24 text-accent" />
+          <h1 className="text-xl font-bold text-text-primary flex items-center gap-2">
+            <BarChart3 className="w-6 h-6 text-accent" />
             <span>Reports & Analytics</span>
           </h1>
           <p className="text-sm text-text-secondary">Analyze asset utilization trends, maintenance frequencies, and lifecycle efficiency.</p>
@@ -328,7 +328,7 @@ export default function Reports() {
       <div className="flex border-b border-border">
         <button
           onClick={() => { setActiveTab('utilization'); setError(null); }}
-          className={`px-16 py-12 text-sm font-semibold border-b-2 transition-all ${
+          className={`px-16 py-3 text-sm font-semibold border-b-2 transition-all ${
             activeTab === 'utilization'
               ? 'border-accent text-accent'
               : 'border-transparent text-text-secondary hover:text-text-primary'
@@ -338,7 +338,7 @@ export default function Reports() {
         </button>
         <button
           onClick={() => { setActiveTab('maintenance'); setError(null); }}
-          className={`px-16 py-12 text-sm font-semibold border-b-2 transition-all ${
+          className={`px-16 py-3 text-sm font-semibold border-b-2 transition-all ${
             activeTab === 'maintenance'
               ? 'border-accent text-accent'
               : 'border-transparent text-text-secondary hover:text-text-primary'
@@ -348,7 +348,7 @@ export default function Reports() {
         </button>
         <button
           onClick={() => { setActiveTab('schedules'); setError(null); }}
-          className={`px-16 py-12 text-sm font-semibold border-b-2 transition-all ${
+          className={`px-16 py-3 text-sm font-semibold border-b-2 transition-all ${
             activeTab === 'schedules'
               ? 'border-accent text-accent'
               : 'border-transparent text-text-secondary hover:text-text-primary'
@@ -358,7 +358,7 @@ export default function Reports() {
         </button>
         <button
           onClick={() => { setActiveTab('departments'); setError(null); }}
-          className={`px-16 py-12 text-sm font-semibold border-b-2 transition-all ${
+          className={`px-16 py-3 text-sm font-semibold border-b-2 transition-all ${
             activeTab === 'departments'
               ? 'border-accent text-accent'
               : 'border-transparent text-text-secondary hover:text-text-primary'
@@ -368,7 +368,7 @@ export default function Reports() {
         </button>
         <button
           onClick={() => { setActiveTab('heatmap'); setError(null); }}
-          className={`px-16 py-12 text-sm font-semibold border-b-2 transition-all ${
+          className={`px-16 py-3 text-sm font-semibold border-b-2 transition-all ${
             activeTab === 'heatmap'
               ? 'border-accent text-accent'
               : 'border-transparent text-text-secondary hover:text-text-primary'
@@ -379,7 +379,7 @@ export default function Reports() {
       </div>
 
       {error && (
-        <div className="p-16 bg-danger-subtle text-danger text-sm rounded border border-danger/25">
+        <div className="p-4 bg-danger-subtle text-danger text-sm rounded border border-danger/25">
           {error}
         </div>
       )}
@@ -387,72 +387,72 @@ export default function Reports() {
       {/* RENDER UTILIZATION TAB */}
       {activeTab === 'utilization' && (
         isUtilLoading ? (
-          <div className="p-48 text-center text-sm text-text-secondary">Loading utilization summaries...</div>
+          <div className="p-12 text-center text-sm text-text-secondary">Loading utilization summaries...</div>
         ) : (
           <>
             {/* Summary KPIs */}
             {utilSummary && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Total Scoped Assets</span>
-                    <span className="p-4 rounded bg-info-subtle text-info">
-                      <FolderTree className="w-16 h-16" />
+                    <span className="p-1 rounded bg-info-subtle text-info">
+                      <FolderTree className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-text-primary mt-12">{utilSummary.totalAssets}</div>
+                  <div className="text-2xl font-bold text-text-primary mt-3">{utilSummary.totalAssets}</div>
                 </div>
 
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Total Utilization</span>
-                    <span className="p-4 rounded bg-info-subtle text-info">
-                      <Clock className="w-16 h-16" />
+                    <span className="p-1 rounded bg-info-subtle text-info">
+                      <Clock className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-text-primary mt-12">{utilSummary.totalUtilizationHours} hrs</div>
+                  <div className="text-2xl font-bold text-text-primary mt-3">{utilSummary.totalUtilizationHours} hrs</div>
                 </div>
 
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Average Asset Usage</span>
-                    <span className="p-4 rounded bg-success-subtle text-success">
-                      <TrendingUp className="w-16 h-16" />
+                    <span className="p-1 rounded bg-success-subtle text-success">
+                      <TrendingUp className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-text-primary mt-12">{utilSummary.averageUtilizationHours} hrs</div>
+                  <div className="text-2xl font-bold text-text-primary mt-3">{utilSummary.averageUtilizationHours} hrs</div>
                 </div>
 
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Top Category</span>
-                    <span className="p-4 rounded bg-warning-subtle text-warning">
-                      <BarChart3 className="w-16 h-16" />
+                    <span className="p-1 rounded bg-warning-subtle text-warning">
+                      <BarChart3 className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-sm font-bold text-text-primary mt-12 truncate">{utilSummary.topCategory}</div>
+                  <div className="text-sm font-bold text-text-primary mt-3 truncate">{utilSummary.topCategory}</div>
                 </div>
               </div>
             )}
 
             {/* Grid Layout for Most-Used vs Idle */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-24">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Most Used Assets */}
-              <div className="p-24 card-premium animate-scale-up space-y-16">
+              <div className="p-6 card-premium animate-scale-up space-y-4">
                 <h3 className="text-lg font-semibold text-text-primary">Most-Used Assets</h3>
-                <div className="space-y-16">
+                <div className="space-y-4">
                   {mostUsed.length === 0 ? (
-                    <div className="text-center py-24 text-xs text-text-muted">No usage logs recorded yet</div>
+                    <div className="text-center py-6 text-xs text-text-muted">No usage logs recorded yet</div>
                   ) : (
                     mostUsed.map((item) => {
                       const ratio = Math.min(100, Math.max(0, (item.utilizationHours / maxHours) * 100));
                       return (
-                        <div key={item.id} className="space-y-4">
+                        <div key={item.id} className="space-y-1">
                           <div className="flex justify-between text-xs font-semibold">
                             <span className="text-text-primary">{item.name} ({item.assetTag})</span>
                             <span className="text-text-secondary">{item.utilizationHours} hrs</span>
                           </div>
-                          <div className="w-full bg-surface-sunken h-8 rounded-badge overflow-hidden">
+                          <div className="w-full bg-surface-sunken h-2 rounded-badge overflow-hidden">
                             <div className="bg-accent h-full rounded-badge" style={{ width: `${ratio}%` }}></div>
                           </div>
                           <div className="flex justify-between text-[10px] text-text-muted">
@@ -467,26 +467,26 @@ export default function Reports() {
               </div>
 
               {/* Idle / Low Utilization Assets */}
-              <div className="p-24 card-premium animate-scale-up space-y-16">
-                <h3 className="text-lg font-semibold text-text-primary flex items-center gap-8">
+              <div className="p-6 card-premium animate-scale-up space-y-4">
+                <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">
                   <AlertTriangle className="w-18 h-18 text-warning" />
                   <span>Idle / Low Usage Assets</span>
                 </h3>
                 <div className="divide-y divide-border">
                   {idle.length === 0 ? (
-                    <div className="text-center py-24 text-xs text-text-muted">No idle assets found</div>
+                    <div className="text-center py-6 text-xs text-text-muted">No idle assets found</div>
                   ) : (
                     idle.map((item) => (
-                      <div key={item.id} className="py-12 flex justify-between items-center text-xs">
+                      <div key={item.id} className="py-3 flex justify-between items-center text-xs">
                         <div>
                           <span className="font-semibold text-text-primary block">{item.name}</span>
                           <span className="text-text-muted text-[10px]">{item.categoryName} &middot; Tag: {item.assetTag}</span>
                         </div>
                         <div className="text-right">
-                          <span className="px-8 py-4 rounded-badge bg-neutral-subtle text-neutral-status text-[10px] font-bold">
+                          <span className="px-2 py-1 rounded-badge bg-neutral-subtle text-neutral-status text-[10px] font-bold">
                             {item.status}
                           </span>
-                          <span className="block text-[10px] text-text-secondary mt-4">0 hrs logged</span>
+                          <span className="block text-[10px] text-text-secondary mt-1">0 hrs logged</span>
                         </div>
                       </div>
                     ))
@@ -496,14 +496,14 @@ export default function Reports() {
             </div>
 
             {/* Detailed All Assets Table */}
-            <div className="p-24 card-premium animate-scale-up space-y-16">
+            <div className="p-6 card-premium animate-scale-up space-y-4">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-text-primary">All Asset Utilization Metrics</h3>
                 <button
                   onClick={downloadUtilizationCSV}
-                  className="px-12 py-8 rounded border border-border hover:bg-neutral-subtle text-text-primary text-xs font-semibold flex items-center gap-8 transition-colors"
+                  className="px-3 py-2 rounded border border-border hover:bg-neutral-subtle text-text-primary text-xs font-semibold flex items-center gap-2 transition-colors"
                 >
-                  <Download className="w-14 h-14" />
+                  <Download className="w-3.5 h-3.5" />
                   <span>Export CSV</span>
                 </button>
               </div>
@@ -511,29 +511,29 @@ export default function Reports() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-border bg-[#F7F8FA] text-xs font-bold text-text-secondary">
-                      <th className="p-12">Tag</th>
-                      <th className="p-12">Asset Name</th>
-                      <th className="p-12">Category</th>
-                      <th className="p-12">Status</th>
-                      <th className="p-12 text-center">Allocations</th>
-                      <th className="p-12 text-center">Bookings</th>
-                      <th className="p-12 text-right">Total Usage</th>
+                      <th className="p-3">Tag</th>
+                      <th className="p-3">Asset Name</th>
+                      <th className="p-3">Category</th>
+                      <th className="p-3">Status</th>
+                      <th className="p-3 text-center">Allocations</th>
+                      <th className="p-3 text-center">Bookings</th>
+                      <th className="p-3 text-right">Total Usage</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border text-xs">
                     {allUtil.map((item) => (
                       <tr key={item.id} className="hover:bg-bg/20 transition-colors">
-                        <td className="p-12 font-mono text-text-secondary">{item.assetTag}</td>
-                        <td className="p-12 font-semibold text-text-primary">{item.name}</td>
-                        <td className="p-12 text-text-secondary">{item.categoryName}</td>
-                        <td className="p-12">
-                          <span className="px-8 py-4 rounded-badge bg-neutral-subtle text-neutral-status font-bold text-[10px]">
+                        <td className="p-3 font-mono text-text-secondary">{item.assetTag}</td>
+                        <td className="p-3 font-semibold text-text-primary">{item.name}</td>
+                        <td className="p-3 text-text-secondary">{item.categoryName}</td>
+                        <td className="p-3">
+                          <span className="px-2 py-1 rounded-badge bg-neutral-subtle text-neutral-status font-bold text-[10px]">
                             {item.status}
                           </span>
                         </td>
-                        <td className="p-12 text-center text-text-secondary">{item.allocationsCount}</td>
-                        <td className="p-12 text-center text-text-secondary">{item.bookingsCount}</td>
-                        <td className="p-12 text-right font-bold text-text-primary">{item.utilizationHours} hrs</td>
+                        <td className="p-3 text-center text-text-secondary">{item.allocationsCount}</td>
+                        <td className="p-3 text-center text-text-secondary">{item.bookingsCount}</td>
+                        <td className="p-3 text-right font-bold text-text-primary">{item.utilizationHours} hrs</td>
                       </tr>
                     ))}
                   </tbody>
@@ -547,71 +547,71 @@ export default function Reports() {
       {/* RENDER MAINTENANCE TAB */}
       {activeTab === 'maintenance' && (
         isMaintLoading ? (
-          <div className="p-48 text-center text-sm text-text-secondary">Loading maintenance summaries...</div>
+          <div className="p-12 text-center text-sm text-text-secondary">Loading maintenance summaries...</div>
         ) : (
           <>
             {/* Summary KPIs */}
             {maintSummary && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Total Raised Tickets</span>
-                    <span className="p-4 rounded bg-info-subtle text-info">
-                      <Wrench className="w-16 h-16" />
+                    <span className="p-1 rounded bg-info-subtle text-info">
+                      <Wrench className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-text-primary mt-12">{maintSummary.totalRequests}</div>
+                  <div className="text-2xl font-bold text-text-primary mt-3">{maintSummary.totalRequests}</div>
                 </div>
 
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Resolved Requests</span>
-                    <span className="p-4 rounded bg-success-subtle text-success">
-                      <FileCheck className="w-16 h-16" />
+                    <span className="p-1 rounded bg-success-subtle text-success">
+                      <FileCheck className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-text-primary mt-12">{maintSummary.byStatus?.Resolved || 0}</div>
+                  <div className="text-2xl font-bold text-text-primary mt-3">{maintSummary.byStatus?.Resolved || 0}</div>
                 </div>
 
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Pending Reviews</span>
-                    <span className="p-4 rounded bg-warning-subtle text-warning">
-                      <HelpCircle className="w-16 h-16" />
+                    <span className="p-1 rounded bg-warning-subtle text-warning">
+                      <HelpCircle className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-text-primary mt-12">{maintSummary.byStatus?.Pending || 0}</div>
+                  <div className="text-2xl font-bold text-text-primary mt-3">{maintSummary.byStatus?.Pending || 0}</div>
                 </div>
 
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Critical Level Failures</span>
-                    <span className="p-4 rounded bg-danger-subtle text-danger">
-                      <AlertTriangle className="w-16 h-16" />
+                    <span className="p-1 rounded bg-danger-subtle text-danger">
+                      <AlertTriangle className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-text-primary mt-12">{maintSummary.byPriority?.Critical || 0}</div>
+                  <div className="text-2xl font-bold text-text-primary mt-3">{maintSummary.byPriority?.Critical || 0}</div>
                 </div>
               </div>
             )}
 
             {/* Grid Layout for breakdowns by Category vs breakdown lists */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-24">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Category Failure distributions */}
-              <div className="p-24 card-premium animate-scale-up space-y-16">
+              <div className="p-6 card-premium animate-scale-up space-y-4">
                 <h3 className="text-lg font-semibold text-text-primary">Breakdown Rate by Category</h3>
                 <div className="divide-y divide-border">
                   {maintByCategory.length === 0 ? (
-                    <div className="text-center py-24 text-xs text-text-muted">No maintenance request categories registered</div>
+                    <div className="text-center py-6 text-xs text-text-muted">No maintenance request categories registered</div>
                   ) : (
                     maintByCategory.map((cat) => (
-                      <div key={cat.id} className="py-12 flex justify-between items-center text-xs">
+                      <div key={cat.id} className="py-3 flex justify-between items-center text-xs">
                         <div>
                           <span className="font-semibold text-text-primary block">{cat.name}</span>
                           <span className="text-text-muted text-[10px]">{cat.resolvedCount} resolved &middot; {cat.pendingCount} pending</span>
                         </div>
                         <div className="text-right">
-                          <span className="px-8 py-4 rounded-badge bg-[#FBEAE9] text-danger text-[10px] font-bold">
+                          <span className="px-2 py-1 rounded-badge bg-[#FBEAE9] text-danger text-[10px] font-bold">
                             {cat.totalCount} ticket{cat.totalCount === 1 ? '' : 's'}
                           </span>
                         </div>
@@ -622,24 +622,24 @@ export default function Reports() {
               </div>
 
               {/* High breakdown frequency assets */}
-              <div className="p-24 card-premium animate-scale-up space-y-16">
-                <h3 className="text-lg font-semibold text-text-primary flex items-center gap-8">
+              <div className="p-6 card-premium animate-scale-up space-y-4">
+                <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">
                   <AlertTriangle className="w-18 h-18 text-danger" />
                   <span>High-Breakdown Assets</span>
                 </h3>
-                <div className="space-y-16">
+                <div className="space-y-4">
                   {maintByAsset.filter(a => a.totalCount > 0).length === 0 ? (
-                    <div className="text-center py-24 text-xs text-text-muted">No assets with breakdown logs found</div>
+                    <div className="text-center py-6 text-xs text-text-muted">No assets with breakdown logs found</div>
                   ) : (
                     maintByAsset.filter(a => a.totalCount > 0).slice(0, 5).map((item) => {
                       const ratio = Math.min(100, Math.max(0, (item.totalCount / maxMaintAssetCount) * 100));
                       return (
-                        <div key={item.id} className="space-y-4">
+                        <div key={item.id} className="space-y-1">
                           <div className="flex justify-between text-xs font-semibold">
                             <span className="text-text-primary">{item.name} ({item.assetTag})</span>
                             <span className="text-text-secondary text-danger">{item.totalCount} incidents</span>
                           </div>
-                          <div className="w-full bg-surface-sunken h-8 rounded-badge overflow-hidden">
+                          <div className="w-full bg-surface-sunken h-2 rounded-badge overflow-hidden">
                             <div className="bg-danger h-full rounded-badge" style={{ width: `${ratio}%` }}></div>
                           </div>
                           <div className="flex justify-between text-[10px] text-text-muted">
@@ -655,14 +655,14 @@ export default function Reports() {
             </div>
 
             {/* Breakdown Priority Distribution Details Table */}
-            <div className="p-24 card-premium animate-scale-up space-y-16">
+            <div className="p-6 card-premium animate-scale-up space-y-4">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-text-primary">Breakdown Distribution Matrix</h3>
                 <button
                   onClick={downloadMaintenanceCSV}
-                  className="px-12 py-8 rounded border border-border hover:bg-neutral-subtle text-text-primary text-xs font-semibold flex items-center gap-8 transition-colors"
+                  className="px-3 py-2 rounded border border-border hover:bg-neutral-subtle text-text-primary text-xs font-semibold flex items-center gap-2 transition-colors"
                 >
-                  <Download className="w-14 h-14" />
+                  <Download className="w-3.5 h-3.5" />
                   <span>Export CSV</span>
                 </button>
               </div>
@@ -670,24 +670,24 @@ export default function Reports() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-border bg-[#F7F8FA] text-xs font-bold text-text-secondary">
-                      <th className="p-12">Asset Tag</th>
-                      <th className="p-12">Asset Name</th>
-                      <th className="p-12">Category</th>
-                      <th className="p-12 text-center">Pending Tickets</th>
-                      <th className="p-12 text-center">In Progress Tickets</th>
-                      <th className="p-12 text-center">Resolved Tickets</th>
-                      <th className="p-12 text-right">Total incidents</th>
+                      <th className="p-3">Asset Tag</th>
+                      <th className="p-3">Asset Name</th>
+                      <th className="p-3">Category</th>
+                      <th className="p-3 text-center">Pending Tickets</th>
+                      <th className="p-3 text-center">In Progress Tickets</th>
+                      <th className="p-3 text-center">Resolved Tickets</th>
+                      <th className="p-3 text-right">Total incidents</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border text-xs">
                     {maintByAsset.map((item) => (
                       <tr key={item.id} className="hover:bg-bg/20 transition-colors">
-                        <td className="p-12 font-mono text-text-secondary">{item.assetTag}</td>
-                        <td className="p-12 font-semibold text-text-primary">{item.name}</td>
-                        <td className="p-12 text-text-secondary">{item.categoryName}</td>
-                        <td className="p-12 text-center text-text-secondary">{item.pendingCount}</td>
-                        <td className="p-12 text-center text-text-secondary">{item.inProgressCount}</td>
-                        <td className="p-12 text-center text-success">{item.resolvedCount}</td>
+                        <td className="p-3 font-mono text-text-secondary">{item.assetTag}</td>
+                        <td className="p-3 font-semibold text-text-primary">{item.name}</td>
+                        <td className="p-3 text-text-secondary">{item.categoryName}</td>
+                        <td className="p-3 text-center text-text-secondary">{item.pendingCount}</td>
+                        <td className="p-3 text-center text-text-secondary">{item.inProgressCount}</td>
+                        <td className="p-3 text-center text-success">{item.resolvedCount}</td>
                         <td className={`p-12 text-right font-bold ${item.totalCount > 0 ? 'text-danger' : 'text-text-muted'}`}>
                           {item.totalCount}
                         </td>
@@ -704,55 +704,55 @@ export default function Reports() {
       {/* RENDER SCHEDULES TAB */}
       {activeTab === 'schedules' && (
         isSchedLoading ? (
-          <div className="p-48 text-center text-sm text-text-secondary">Loading schedules and lifecycle data...</div>
+          <div className="p-12 text-center text-sm text-text-secondary">Loading schedules and lifecycle data...</div>
         ) : (
           <>
             {/* Summary KPIs */}
             {schedSummary && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Due for Routine Maintenance</span>
-                    <span className="p-4 rounded bg-warning-subtle text-warning">
-                      <Calendar className="w-16 h-16" />
+                    <span className="p-1 rounded bg-warning-subtle text-warning">
+                      <Calendar className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-text-primary mt-12">{schedSummary.totalDueForMaintenance}</div>
+                  <div className="text-2xl font-bold text-text-primary mt-3">{schedSummary.totalDueForMaintenance}</div>
                 </div>
 
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Due for Retirement</span>
-                    <span className="p-4 rounded bg-danger-subtle text-danger">
-                      <AlertTriangle className="w-16 h-16" />
+                    <span className="p-1 rounded bg-danger-subtle text-danger">
+                      <AlertTriangle className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-text-primary mt-12">{schedSummary.totalDueForRetirement}</div>
+                  <div className="text-2xl font-bold text-text-primary mt-3">{schedSummary.totalDueForRetirement}</div>
                 </div>
 
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Retired Assets Count</span>
-                    <span className="p-4 rounded bg-neutral-subtle text-text-secondary">
-                      <Archive className="w-16 h-16" />
+                    <span className="p-1 rounded bg-neutral-subtle text-text-secondary">
+                      <Archive className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-text-primary mt-12">{schedSummary.totalRetired}</div>
+                  <div className="text-2xl font-bold text-text-primary mt-3">{schedSummary.totalRetired}</div>
                 </div>
               </div>
             )}
 
             {/* Grid Tables for Maintenance Schedule vs Retirement */}
-            <div className="space-y-24">
+            <div className="space-y-6">
               {/* Due for Maintenance Table */}
-              <div className="p-24 card-premium animate-scale-up space-y-16">
+              <div className="p-6 card-premium animate-scale-up space-y-4">
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-semibold text-text-primary">Routine Maintenance Due (6-Month Inspect Intervals)</h3>
                   <button
                     onClick={downloadMaintenanceSchedulesCSV}
-                    className="px-12 py-8 rounded border border-border hover:bg-neutral-subtle text-text-primary text-xs font-semibold flex items-center gap-8 transition-colors"
+                    className="px-3 py-2 rounded border border-border hover:bg-neutral-subtle text-text-primary text-xs font-semibold flex items-center gap-2 transition-colors"
                   >
-                    <Download className="w-14 h-14" />
+                    <Download className="w-3.5 h-3.5" />
                     <span>Export CSV</span>
                   </button>
                 </div>
@@ -760,39 +760,39 @@ export default function Reports() {
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="border-b border-border bg-[#F7F8FA] text-xs font-bold text-text-secondary">
-                        <th className="p-12">Tag</th>
-                        <th className="p-12">Asset Name</th>
-                        <th className="p-12">Category</th>
-                        <th className="p-12">Condition</th>
-                        <th className="p-12 text-center">Last Maintenance Check</th>
-                        <th className="p-12 text-center">Elapsed</th>
-                        <th className="p-12 text-right">Reason for Check</th>
+                        <th className="p-3">Tag</th>
+                        <th className="p-3">Asset Name</th>
+                        <th className="p-3">Category</th>
+                        <th className="p-3">Condition</th>
+                        <th className="p-3 text-center">Last Maintenance Check</th>
+                        <th className="p-3 text-center">Elapsed</th>
+                        <th className="p-3 text-right">Reason for Check</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border text-xs">
                       {dueMaint.length === 0 ? (
                         <tr>
-                          <td colSpan={7} className="p-24 text-center text-text-muted">No assets currently overdue for maintenance</td>
+                          <td colSpan={7} className="p-6 text-center text-text-muted">No assets currently overdue for maintenance</td>
                         </tr>
                       ) : (
                         dueMaint.map((item) => (
                           <tr key={item.id} className="hover:bg-bg/20 transition-colors">
-                            <td className="p-12 font-mono text-text-secondary">{item.assetTag}</td>
-                            <td className="p-12 font-semibold text-text-primary">{item.name}</td>
-                            <td className="p-12 text-text-secondary">{item.categoryName}</td>
-                            <td className="p-12">
-                              <span className="px-8 py-4 rounded-badge bg-neutral-subtle text-neutral-status font-bold text-[10px]">
+                            <td className="p-3 font-mono text-text-secondary">{item.assetTag}</td>
+                            <td className="p-3 font-semibold text-text-primary">{item.name}</td>
+                            <td className="p-3 text-text-secondary">{item.categoryName}</td>
+                            <td className="p-3">
+                              <span className="px-2 py-1 rounded-badge bg-neutral-subtle text-neutral-status font-bold text-[10px]">
                                 {item.condition}
                               </span>
                             </td>
-                            <td className="p-12 text-center text-text-secondary">
+                            <td className="p-3 text-center text-text-secondary">
                               {item.lastMaintenanceDate 
                                 ? new Date(item.lastMaintenanceDate).toLocaleDateString()
                                 : <span className="italic text-text-muted">Never inspected</span>
                               }
                             </td>
-                            <td className="p-12 text-center text-warning font-semibold">{item.elapsedMonths} months</td>
-                            <td className="p-12 text-right text-text-secondary font-medium">{item.reason}</td>
+                            <td className="p-3 text-center text-warning font-semibold">{item.elapsedMonths} months</td>
+                            <td className="p-3 text-right text-text-secondary font-medium">{item.reason}</td>
                           </tr>
                         ))
                       )}
@@ -802,14 +802,14 @@ export default function Reports() {
               </div>
 
               {/* Due for Retirement Table */}
-              <div className="p-24 card-premium animate-scale-up space-y-16">
+              <div className="p-6 card-premium animate-scale-up space-y-4">
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-semibold text-danger">Retirement Lifecycle Schedule</h3>
                   <button
                     onClick={downloadRetirementSchedulesCSV}
-                    className="px-12 py-8 rounded border border-border hover:bg-neutral-subtle text-text-primary text-xs font-semibold flex items-center gap-8 transition-colors"
+                    className="px-3 py-2 rounded border border-border hover:bg-neutral-subtle text-text-primary text-xs font-semibold flex items-center gap-2 transition-colors"
                   >
-                    <Download className="w-14 h-14" />
+                    <Download className="w-3.5 h-3.5" />
                     <span>Export CSV</span>
                   </button>
                 </div>
@@ -817,30 +817,30 @@ export default function Reports() {
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="border-b border-border bg-[#F7F8FA] text-xs font-bold text-text-secondary">
-                        <th className="p-12">Tag</th>
-                        <th className="p-12">Asset Name</th>
-                        <th className="p-12">Category</th>
-                        <th className="p-12">Acquisition Date</th>
-                        <th className="p-12 text-center">Asset Age</th>
-                        <th className="p-12 text-center">Useful Life</th>
-                        <th className="p-12 text-right">Retirement Status / Reason</th>
+                        <th className="p-3">Tag</th>
+                        <th className="p-3">Asset Name</th>
+                        <th className="p-3">Category</th>
+                        <th className="p-3">Acquisition Date</th>
+                        <th className="p-3 text-center">Asset Age</th>
+                        <th className="p-3 text-center">Useful Life</th>
+                        <th className="p-3 text-right">Retirement Status / Reason</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border text-xs">
                       {dueRetire.length === 0 ? (
                         <tr>
-                          <td colSpan={7} className="p-24 text-center text-text-muted">No assets flagged for retirement</td>
+                          <td colSpan={7} className="p-6 text-center text-text-muted">No assets flagged for retirement</td>
                         </tr>
                       ) : (
                         dueRetire.map((item) => (
                           <tr key={item.id} className="hover:bg-bg/20 transition-colors">
-                            <td className="p-12 font-mono text-text-secondary">{item.assetTag}</td>
-                            <td className="p-12 font-semibold text-text-primary">{item.name}</td>
-                            <td className="p-12 text-text-secondary">{item.categoryName}</td>
-                            <td className="p-12 text-text-secondary">{new Date(item.acquisitionDate).toLocaleDateString()}</td>
-                            <td className="p-12 text-center font-medium">{item.ageMonths} months</td>
-                            <td className="p-12 text-center text-text-muted">{item.usefulLifeMonths} months</td>
-                            <td className="p-12 text-right text-danger font-medium">{item.reason}</td>
+                            <td className="p-3 font-mono text-text-secondary">{item.assetTag}</td>
+                            <td className="p-3 font-semibold text-text-primary">{item.name}</td>
+                            <td className="p-3 text-text-secondary">{item.categoryName}</td>
+                            <td className="p-3 text-text-secondary">{new Date(item.acquisitionDate).toLocaleDateString()}</td>
+                            <td className="p-3 text-center font-medium">{item.ageMonths} months</td>
+                            <td className="p-3 text-center text-text-muted">{item.usefulLifeMonths} months</td>
+                            <td className="p-3 text-right text-danger font-medium">{item.reason}</td>
                           </tr>
                         ))
                       )}
@@ -856,53 +856,53 @@ export default function Reports() {
       {/* RENDER DEPARTMENT ALLOCATIONS TAB */}
       {activeTab === 'departments' && (
         isDeptLoading ? (
-          <div className="p-48 text-center text-sm text-text-secondary">Loading department allocations data...</div>
+          <div className="p-12 text-center text-sm text-text-secondary">Loading department allocations data...</div>
         ) : (
           <>
             {/* Summary KPIs */}
             {deptSummary && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Total Active Departments</span>
-                    <span className="p-4 rounded bg-info-subtle text-info">
-                      <Users className="w-16 h-16" />
+                    <span className="p-1 rounded bg-info-subtle text-info">
+                      <Users className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-text-primary mt-12">{deptSummary.totalDepartmentsCount}</div>
+                  <div className="text-2xl font-bold text-text-primary mt-3">{deptSummary.totalDepartmentsCount}</div>
                 </div>
 
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Total Allocated Assets</span>
-                    <span className="p-4 rounded bg-success-subtle text-success">
-                      <FolderTree className="w-16 h-16" />
+                    <span className="p-1 rounded bg-success-subtle text-success">
+                      <FolderTree className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-text-primary mt-12">{deptSummary.totalAllocatedAssets}</div>
+                  <div className="text-2xl font-bold text-text-primary mt-3">{deptSummary.totalAllocatedAssets}</div>
                 </div>
 
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Total Capital Assigned</span>
-                    <span className="p-4 rounded bg-warning-subtle text-warning">
-                      <DollarSign className="w-16 h-16" />
+                    <span className="p-1 rounded bg-warning-subtle text-warning">
+                      <DollarSign className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-text-primary mt-12">${deptSummary.totalAllocatedValue.toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-text-primary mt-3">${deptSummary.totalAllocatedValue.toLocaleString()}</div>
                 </div>
               </div>
             )}
 
             {/* Department Summary Table */}
-            <div className="p-24 card-premium animate-scale-up space-y-16">
+            <div className="p-6 card-premium animate-scale-up space-y-4">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-text-primary">Department-wise Asset Allocation</h3>
                 <button
                   onClick={downloadDepartmentCSV}
-                  className="px-12 py-8 rounded border border-border hover:bg-neutral-subtle text-text-primary text-xs font-semibold flex items-center gap-8 transition-colors"
+                  className="px-3 py-2 rounded border border-border hover:bg-neutral-subtle text-text-primary text-xs font-semibold flex items-center gap-2 transition-colors"
                 >
-                  <Download className="w-14 h-14" />
+                  <Download className="w-3.5 h-3.5" />
                   <span>Export CSV</span>
                 </button>
               </div>
@@ -910,49 +910,49 @@ export default function Reports() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-border bg-[#F7F8FA] text-xs font-bold text-text-secondary">
-                      <th className="p-12">Department Name</th>
-                      <th className="p-12">Department Head</th>
-                      <th className="p-12 text-center">Allocated Assets</th>
-                      <th className="p-12 text-center">Department Asset Value Share</th>
-                      <th className="p-12 text-right">Total Financial Value</th>
+                      <th className="p-3">Department Name</th>
+                      <th className="p-3">Department Head</th>
+                      <th className="p-3 text-center">Allocated Assets</th>
+                      <th className="p-3 text-center">Department Asset Value Share</th>
+                      <th className="p-3 text-right">Total Financial Value</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border text-xs">
                     {deptReportList.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="p-24 text-center text-text-muted">No allocations found for departments</td>
+                        <td colSpan={5} className="p-6 text-center text-text-muted">No allocations found for departments</td>
                       </tr>
                     ) : (
                       deptReportList.map((item) => {
                         const ratio = Math.min(100, Math.max(0, (item.totalValue / maxDeptValue) * 100));
                         return (
                           <tr key={item.id} className="hover:bg-bg/20 transition-colors">
-                            <td className="p-12">
+                            <td className="p-3">
                               <span className="font-semibold text-text-primary block">{item.name}</span>
-                              <div className="flex flex-wrap gap-4 mt-8">
+                              <div className="flex flex-wrap gap-1 mt-2">
                                 {item.categoryBreakdown.slice(0, 3).map((breakdown: any) => (
-                                  <span key={breakdown.categoryName} className="px-6 py-2 rounded bg-surface-sunken border border-border text-[9px] text-text-secondary">
+                                  <span key={breakdown.categoryName} className="px-1.5 py-0.5 rounded bg-surface-sunken border border-border text-[9px] text-text-secondary">
                                     {breakdown.categoryName}: {breakdown.count}
                                   </span>
                                 ))}
                                 {item.categoryBreakdown.length > 3 && (
-                                  <span className="px-6 py-2 text-[9px] text-text-muted italic">
+                                  <span className="px-1.5 py-0.5 text-[9px] text-text-muted italic">
                                     +{item.categoryBreakdown.length - 3} more
                                   </span>
                                 )}
                               </div>
                             </td>
-                            <td className="p-12 text-text-secondary font-medium">{item.headName}</td>
-                            <td className="p-12 text-center font-bold text-text-primary">{item.assetCount} items</td>
-                            <td className="p-12 max-w-[200px]">
-                              <div className="w-full bg-surface-sunken h-8 rounded-badge overflow-hidden">
+                            <td className="p-3 text-text-secondary font-medium">{item.headName}</td>
+                            <td className="p-3 text-center font-bold text-text-primary">{item.assetCount} items</td>
+                            <td className="p-3 max-w-[200px]">
+                              <div className="w-full bg-surface-sunken h-2 rounded-badge overflow-hidden">
                                 <div className="bg-accent h-full rounded-badge" style={{ width: `${ratio}%` }}></div>
                               </div>
-                              <span className="text-[10px] text-text-muted mt-4 block">
+                              <span className="text-[10px] text-text-muted mt-1 block">
                                 {((item.totalValue / (deptSummary?.totalAllocatedValue || 1)) * 100).toFixed(1)}% of total value
                               </span>
                             </td>
-                            <td className="p-12 text-right font-bold text-text-primary">${item.totalValue.toLocaleString()}</td>
+                            <td className="p-3 text-right font-bold text-text-primary">${item.totalValue.toLocaleString()}</td>
                           </tr>
                         );
                       })
@@ -968,80 +968,80 @@ export default function Reports() {
       {/* RENDER BOOKING HEATMAP TAB */}
       {activeTab === 'heatmap' && (
         isHeatmapLoading ? (
-          <div className="p-48 text-center text-sm text-text-secondary">Loading booking heatmap data...</div>
+          <div className="p-12 text-center text-sm text-text-secondary">Loading booking heatmap data...</div>
         ) : (
           <>
             {/* Summary KPIs */}
             {heatmapSummary && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Total Scheduled Reservations</span>
-                    <span className="p-4 rounded bg-info-subtle text-info">
-                      <FolderTree className="w-16 h-16" />
+                    <span className="p-1 rounded bg-info-subtle text-info">
+                      <FolderTree className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-text-primary mt-12">{heatmapSummary.totalBookings}</div>
+                  <div className="text-2xl font-bold text-text-primary mt-3">{heatmapSummary.totalBookings}</div>
                 </div>
 
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Peak Reservation Day</span>
-                    <span className="p-4 rounded bg-success-subtle text-success">
-                      <TrendingUp className="w-16 h-16" />
+                    <span className="p-1 rounded bg-success-subtle text-success">
+                      <TrendingUp className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-text-primary mt-12">{heatmapSummary.peakDay}</div>
+                  <div className="text-2xl font-bold text-text-primary mt-3">{heatmapSummary.peakDay}</div>
                 </div>
 
-                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
+                <div className="p-4 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Peak Usage Time Slot</span>
-                    <span className="p-4 rounded bg-warning-subtle text-warning">
-                      <Clock className="w-16 h-16" />
+                    <span className="p-1 rounded bg-warning-subtle text-warning">
+                      <Clock className="w-4 h-4" />
                     </span>
                   </div>
-                  <div className="text-sm font-bold text-text-primary mt-12">{heatmapSummary.peakHour}</div>
+                  <div className="text-sm font-bold text-text-primary mt-3">{heatmapSummary.peakHour}</div>
                 </div>
               </div>
             )}
 
             {/* Visual Heatmap Grid */}
-            <div className="p-24 card-premium animate-scale-up space-y-24">
+            <div className="p-6 card-premium animate-scale-up space-y-6">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-text-primary flex items-center gap-8">
+                <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">
                   <Grid className="w-18 h-18 text-accent" />
                   <span>Time-Slot Utilization Heatmap</span>
                 </h3>
                 {/* Actions & Legend */}
-                <div className="flex items-center gap-24">
+                <div className="flex items-center gap-6">
                   {/* Legend */}
-                  <div className="flex items-center gap-8 text-[10px] text-text-secondary">
+                  <div className="flex items-center gap-2 text-[10px] text-text-secondary">
                     <span>Less</span>
-                    <div className="w-12 h-12 rounded bg-[#F3F4F6] border border-border/40"></div>
-                    <div className="w-12 h-12 rounded bg-[#D1FAE5] border border-[#A7F3D0]"></div>
-                    <div className="w-12 h-12 rounded bg-[#A7F3D0] border border-[#6EE7B7]"></div>
-                    <div className="w-12 h-12 rounded bg-[#6EE7B7] border border-[#34D399]"></div>
-                    <div className="w-12 h-12 rounded bg-[#34D399] border border-[#10B981]"></div>
-                    <div className="w-12 h-12 rounded bg-[#059669] border border-[#047857]"></div>
+                    <div className="w-3 h-3 rounded bg-[#F3F4F6] border border-border/40"></div>
+                    <div className="w-3 h-3 rounded bg-[#D1FAE5] border border-[#A7F3D0]"></div>
+                    <div className="w-3 h-3 rounded bg-[#A7F3D0] border border-[#6EE7B7]"></div>
+                    <div className="w-3 h-3 rounded bg-[#6EE7B7] border border-[#34D399]"></div>
+                    <div className="w-3 h-3 rounded bg-[#34D399] border border-[#10B981]"></div>
+                    <div className="w-3 h-3 rounded bg-[#059669] border border-[#047857]"></div>
                     <span>More</span>
                   </div>
                   {/* Export */}
                   <button
                     onClick={downloadHeatmapCSV}
-                    className="px-12 py-8 rounded border border-border hover:bg-neutral-subtle text-text-primary text-xs font-semibold flex items-center gap-8 transition-colors"
+                    className="px-3 py-2 rounded border border-border hover:bg-neutral-subtle text-text-primary text-xs font-semibold flex items-center gap-2 transition-colors"
                   >
-                    <Download className="w-14 h-14" />
+                    <Download className="w-3.5 h-3.5" />
                     <span>Export CSV</span>
                   </button>
                 </div>
               </div>
 
               <div className="overflow-x-auto">
-                <div className="min-w-[800px] pb-12">
+                <div className="min-w-[800px] pb-3">
                   {/* Grid header (Hours) */}
-                  <div className="grid grid-cols-[100px_repeat(13,1fr)] gap-8 text-center text-xs font-bold text-text-secondary mb-12">
-                    <div className="text-left pl-8">Day</div>
+                  <div className="grid grid-cols-[100px_repeat(13,1fr)] gap-2 text-center text-xs font-bold text-text-secondary mb-3">
+                    <div className="text-left pl-2">Day</div>
                     {businessHours.map(hour => (
                       <div key={hour} className="font-mono text-[10px]">
                         {hour.toString().padStart(2, '0')}:00
@@ -1050,10 +1050,10 @@ export default function Reports() {
                   </div>
 
                   {/* Grid rows (Days) */}
-                  <div className="space-y-8">
+                  <div className="space-y-2">
                     {dayIndices.map((dayIdx, labelIdx) => (
-                      <div key={dayIdx} className="grid grid-cols-[100px_repeat(13,1fr)] gap-8 items-center">
-                        <div className="text-xs font-semibold text-text-primary pl-8">
+                      <div key={dayIdx} className="grid grid-cols-[100px_repeat(13,1fr)] gap-2 items-center">
+                        <div className="text-xs font-semibold text-text-primary pl-2">
                           {daysLabel[labelIdx]}
                         </div>
                         {businessHours.map((hour) => {

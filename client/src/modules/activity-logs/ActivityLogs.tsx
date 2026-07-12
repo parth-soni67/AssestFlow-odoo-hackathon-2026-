@@ -88,7 +88,7 @@ export default function ActivityLogs() {
   };
 
   return (
-    <div className="space-y-24">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
@@ -98,38 +98,38 @@ export default function ActivityLogs() {
       </div>
 
       {error && (
-        <div className="p-16 bg-danger-subtle text-danger text-sm rounded border border-danger/25">
+        <div className="p-4 bg-danger-subtle text-danger text-sm rounded border border-danger/25">
           {error}
         </div>
       )}
 
       {/* Filter Toolbar */}
-      <div className="p-16 rounded border border-border bg-surface flex flex-wrap items-center justify-between gap-16">
-        <form onSubmit={handleSearchSubmit} className="flex items-center gap-8 w-full md:w-auto flex-1 max-w-sm">
+      <div className="p-4 rounded border border-border bg-surface flex flex-wrap items-center justify-between gap-4">
+        <form onSubmit={handleSearchSubmit} className="flex items-center gap-2 w-full md:w-auto flex-1 max-w-sm">
           <div className="relative flex-1">
-            <Search className="w-16 h-16 absolute left-12 top-10 text-text-muted" />
+            <Search className="w-4 h-4 absolute left-3 top-10 text-text-muted" />
             <input
               type="text"
               placeholder="Search user, email, action..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-36 pr-12 py-8 text-sm rounded border border-border bg-surface"
+              className="w-full pl-36 pr-3 py-2 text-sm rounded border border-border bg-surface"
             />
           </div>
           <button 
             type="submit"
-            className="px-16 py-8 bg-accent text-white text-sm font-semibold rounded hover:bg-accent-hover transition-colors"
+            className="px-4 py-2 bg-accent text-white text-sm font-semibold rounded hover:bg-accent-hover transition-colors"
           >
             Search
           </button>
         </form>
 
-        <div className="flex flex-wrap items-center gap-12 w-full md:w-auto">
+        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
           {/* Action Filter */}
           <select
             value={actionFilter}
             onChange={(e) => { setActionFilter(e.target.value); setPage(1); }}
-            className="px-12 py-8 text-sm rounded border border-border bg-surface"
+            className="px-3 py-2 text-sm rounded border border-border bg-surface"
           >
             <option value="">All Actions</option>
             <option value="ALLOCATION_CREATE">Allocation Create</option>
@@ -156,7 +156,7 @@ export default function ActivityLogs() {
           <select
             value={entityFilter}
             onChange={(e) => { setEntityFilter(e.target.value); setPage(1); }}
-            className="px-12 py-8 text-sm rounded border border-border bg-surface"
+            className="px-3 py-2 text-sm rounded border border-border bg-surface"
           >
             <option value="">All Entity Types</option>
             <option value="Asset">Asset</option>
@@ -171,10 +171,10 @@ export default function ActivityLogs() {
           {(search || actionFilter || entityFilter) && (
             <button
               onClick={handleReset}
-              className="p-8 text-text-secondary hover:text-accent rounded border border-border hover:bg-surface-sunken transition-colors"
+              className="p-2 text-text-secondary hover:text-accent rounded border border-border hover:bg-surface-sunken transition-colors"
               title="Reset Filters"
             >
-              <RotateCcw className="w-16 h-16" />
+              <RotateCcw className="w-4 h-4" />
             </button>
           )}
         </div>
@@ -183,11 +183,11 @@ export default function ActivityLogs() {
       {/* Main Grid/Table */}
       <div className="rounded border border-border bg-surface overflow-hidden">
         {isLoading ? (
-          <div className="p-48 text-center text-sm text-text-secondary">
+          <div className="p-12 text-center text-sm text-text-secondary">
             Loading activity logs...
           </div>
         ) : logs.length === 0 ? (
-          <div className="p-48 text-center text-sm text-text-secondary">
+          <div className="p-12 text-center text-sm text-text-secondary">
             No activity logs found matching the filters.
           </div>
         ) : (
@@ -195,38 +195,38 @@ export default function ActivityLogs() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-border bg-[#F7F8FA] text-xs font-bold text-text-secondary">
-                  <th className="p-16">User</th>
-                  <th className="p-16">Action</th>
-                  <th className="p-16">Entity Type</th>
-                  <th className="p-16">Entity ID</th>
-                  <th className="p-16">Timestamp</th>
-                  <th className="p-16 text-right">Details</th>
+                  <th className="p-4">User</th>
+                  <th className="p-4">Action</th>
+                  <th className="p-4">Entity Type</th>
+                  <th className="p-4">Entity ID</th>
+                  <th className="p-4">Timestamp</th>
+                  <th className="p-4 text-right">Details</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border text-sm">
                 {logs.map((log) => (
                   <tr key={log.id} className="hover:bg-bg/40 transition-colors">
-                    <td className="p-16">
+                    <td className="p-4">
                       <div className="font-semibold text-text-primary">{log.user?.name}</div>
                       <div className="text-xs text-text-muted">{log.user?.email}</div>
                     </td>
-                    <td className="p-16">
-                      <span className={`px-8 py-4 rounded-badge text-xs font-bold ${getActionBadgeClass(log.action)}`}>
+                    <td className="p-4">
+                      <span className={`px-8 py-1 rounded-badge text-xs font-bold ${getActionBadgeClass(log.action)}`}>
                         {log.action}
                       </span>
                     </td>
-                    <td className="p-16 font-medium text-text-primary">{log.entityType}</td>
-                    <td className="p-16 font-mono text-xs text-text-secondary">#{log.entityId}</td>
-                    <td className="p-16 font-mono text-xs text-text-muted">
+                    <td className="p-4 font-medium text-text-primary">{log.entityType}</td>
+                    <td className="p-4 font-mono text-xs text-text-secondary">#{log.entityId}</td>
+                    <td className="p-4 font-mono text-xs text-text-muted">
                       {new Date(log.timestamp).toLocaleString()}
                     </td>
-                    <td className="p-16 text-right">
+                    <td className="p-4 text-right">
                       <button
                         onClick={() => setSelectedLog(log)}
-                        className="p-8 text-text-secondary hover:text-accent rounded hover:bg-surface-sunken transition-colors"
+                        className="p-2 text-text-secondary hover:text-accent rounded hover:bg-surface-sunken transition-colors"
                         title="View Details"
                       >
-                        <FileJson className="w-16 h-16" />
+                        <FileJson className="w-4 h-4" />
                       </button>
                     </td>
                   </tr>
@@ -238,24 +238,24 @@ export default function ActivityLogs() {
 
         {/* Pagination Bar */}
         {pagination && pagination.totalPages > 1 && (
-          <div className="p-16 border-t border-border flex items-center justify-between bg-[#F7F8FA]">
+          <div className="p-4 border-t border-border flex items-center justify-between bg-[#F7F8FA]">
             <span className="text-xs text-text-secondary">
               Showing page {pagination.page} of {pagination.totalPages} ({pagination.total} total logs)
             </span>
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-2">
               <button
                 disabled={page <= 1}
                 onClick={() => setPage(p => Math.max(1, p - 1))}
-                className="p-8 rounded border border-border bg-surface text-text-secondary disabled:opacity-50 disabled:cursor-not-allowed hover:bg-surface-sunken transition-colors"
+                className="p-2 rounded border border-border bg-surface text-text-secondary disabled:opacity-50 disabled:cursor-not-allowed hover:bg-surface-sunken transition-colors"
               >
-                <ChevronLeft className="w-16 h-16" />
+                <ChevronLeft className="w-4 h-4" />
               </button>
               <button
                 disabled={page >= pagination.totalPages}
                 onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
-                className="p-8 rounded border border-border bg-surface text-text-secondary disabled:opacity-50 disabled:cursor-not-allowed hover:bg-surface-sunken transition-colors"
+                className="p-2 rounded border border-border bg-surface text-text-secondary disabled:opacity-50 disabled:cursor-not-allowed hover:bg-surface-sunken transition-colors"
               >
-                <ChevronRight className="w-16 h-16" />
+                <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -264,9 +264,9 @@ export default function ActivityLogs() {
 
       {/* JSON Details Modal */}
       {selectedLog && (
-        <div className="fixed inset-0 bg-text-primary/40 backdrop-blur-sm flex items-center justify-center z-50 p-24">
+        <div className="fixed inset-0 bg-text-primary/40 backdrop-blur-sm flex items-center justify-center z-50 p-6">
           <div className="bg-surface border border-border rounded shadow-xl w-full max-w-lg flex flex-col max-h-[85vh]">
-            <div className="p-16 border-b border-border flex items-center justify-between bg-[#F7F8FA]">
+            <div className="p-4 border-b border-border flex items-center justify-between bg-[#F7F8FA]">
               <h3 className="text-sm font-bold text-text-primary">
                 Activity Details (ID: #{selectedLog.id})
               </h3>
@@ -277,7 +277,7 @@ export default function ActivityLogs() {
                 Close
               </button>
             </div>
-            <div className="p-24 overflow-y-auto flex-1 font-mono text-xs bg-surface-sunken text-[#1A1D23] rounded-b">
+            <div className="p-6 overflow-y-auto flex-1 font-mono text-xs bg-surface-sunken text-[#1A1D23] rounded-b">
               <pre className="whitespace-pre-wrap">
                 {JSON.stringify({
                   action: selectedLog.action,
