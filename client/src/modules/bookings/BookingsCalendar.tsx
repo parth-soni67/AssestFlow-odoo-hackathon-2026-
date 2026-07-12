@@ -349,14 +349,14 @@ export default function BookingsCalendar() {
                       required
                       value={endTime}
                       onChange={(e) => setEndTime(e.target.value)}
-                      className="w-full h-32 rounded border border-border px-12 text-xs text-text-primary focus:outline-none"
+                      className="input-premium w-full h-32"
                     />
                   </div>
                   <div>
                     <button
                       type="submit"
                       disabled={loading || !startTime || !endTime}
-                      className="w-full h-32 bg-accent hover:bg-accent-hover disabled:opacity-50 text-white rounded font-semibold text-xs transition-colors shadow-sm focus:outline-none"
+                      className="w-full h-32 bg-accent hover:bg-accent-hover disabled:opacity-50 text-white rounded-sm font-semibold text-xs transition-colors shadow-sm btn-premium"
                     >
                       {loading ? 'Validating Slot...' : 'Confirm Reservation'}
                     </button>
@@ -365,8 +365,8 @@ export default function BookingsCalendar() {
               </div>
 
               {/* Timeline list of upcoming bookings */}
-              <div className="bg-surface rounded border border-border p-24">
-                <h3 className="font-bold text-text-primary border-b border-border pb-12 mb-16 text-sm">Upcoming Schedule</h3>
+              <div className="card-premium p-24">
+                <h3 className="font-bold text-text-primary border-b border-border/60 pb-12 mb-16 text-sm">Upcoming Schedule</h3>
                 
                 {bookings.length === 0 ? (
                   <div className="p-32 text-center text-text-muted text-xs">
@@ -383,7 +383,7 @@ export default function BookingsCalendar() {
                       return (
                         <div
                           key={booking.id}
-                          className={`p-16 rounded border transition-all ${
+                          className={`p-16 rounded-sm border transition-all animate-scale-up ${
                             booking.status === 'Cancelled' ? 'bg-surface border-border/40 opacity-50' : 'bg-surface-sunken border-border'
                           }`}
                         >
@@ -406,7 +406,7 @@ export default function BookingsCalendar() {
                                     required
                                     value={rescheduleStart}
                                     onChange={(e) => setRescheduleStart(e.target.value)}
-                                    className="w-full rounded border border-border px-12 py-8 text-xs focus:outline-none"
+                                    className="input-premium w-full h-32"
                                   />
                                 </div>
                                 <div className="space-y-8">
@@ -418,7 +418,7 @@ export default function BookingsCalendar() {
                                     required
                                     value={rescheduleEnd}
                                     onChange={(e) => setRescheduleEnd(e.target.value)}
-                                    className="w-full rounded border border-border px-12 py-8 text-xs focus:outline-none"
+                                    className="input-premium w-full h-32"
                                   />
                                 </div>
                               </div>
@@ -426,7 +426,7 @@ export default function BookingsCalendar() {
                                 <button
                                   type="button"
                                   onClick={() => setEditingBookingId(null)}
-                                  className="px-12 py-8 bg-surface border border-border text-text-secondary rounded text-xs font-semibold hover:bg-surface-sunken"
+                                  className="px-12 py-8 bg-surface border border-border text-text-secondary rounded-sm text-xs font-semibold hover:bg-surface-sunken btn-premium"
                                 >
                                   Cancel
                                 </button>
@@ -434,7 +434,7 @@ export default function BookingsCalendar() {
                                   type="button"
                                   disabled={loading}
                                   onClick={() => handleReschedule(booking.id)}
-                                  className="px-12 py-8 bg-accent hover:bg-accent-hover text-white rounded text-xs font-semibold"
+                                  className="px-12 py-8 bg-accent hover:bg-accent-hover text-white rounded-sm text-xs font-semibold btn-premium"
                                 >
                                   {loading ? 'Rescheduling...' : 'Save Reschedule'}
                                 </button>
@@ -467,7 +467,7 @@ export default function BookingsCalendar() {
                                 {canReschedule && (
                                   <button
                                     onClick={() => startRescheduling(booking)}
-                                    className="px-12 py-6 bg-surface hover:bg-surface-sunken text-text-secondary rounded border border-border text-xs font-medium transition-colors"
+                                    className="px-12 py-6 bg-surface hover:bg-surface-sunken text-text-secondary rounded-sm border border-border text-xs font-medium transition-colors btn-premium"
                                   >
                                     Reschedule
                                   </button>
@@ -476,7 +476,7 @@ export default function BookingsCalendar() {
                                 {canCancel && (
                                   <button
                                     onClick={() => handleCancel(booking.id)}
-                                    className="px-12 py-6 bg-danger-subtle hover:bg-danger/10 text-danger rounded border border-danger/25 text-xs font-medium transition-colors"
+                                    className="px-12 py-6 bg-danger-subtle hover:bg-danger/10 text-danger rounded-sm border border-danger/25 text-xs font-medium transition-colors btn-premium"
                                   >
                                     Cancel
                                   </button>

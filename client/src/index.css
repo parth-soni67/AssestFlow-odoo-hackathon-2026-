@@ -3,32 +3,34 @@
 @tailwind utilities;
 
 :root {
-  /* Color palette from DESIGN_GUIDE.md */
-  --color-bg: #F7F8FA;
-  --color-surface: #FFFFFF;
-  --color-surface-sunken: #EEF0F3;
-  --color-border: #DDE1E6;
-  --color-border-strong: #C4C9D1;
-  --color-text-primary: #1A1D23;
-  --color-text-secondary: #5B6270;
-  --color-text-muted: #8A909C;
-  --color-accent: #2F5DE0;
-  --color-accent-hover: #274CBD;
-  --color-accent-subtle: #EAF0FE;
+  /* Designer Light Theme: Royal Violet & Slate */
+  --color-bg: #F8FAFC; /* softest slate blue */
+  --color-surface: #FFFFFF; /* pure white surface cards */
+  --color-surface-sunken: #F1F5F9; /* slate-100 for nested blocks */
+  --color-border: #E2E8F0; /* slate-200 default borders */
+  --color-border-strong: #CBD5E1; /* slate-300 strong borders */
+  
+  --color-text-primary: #0F172A; /* slate-900 dense text */
+  --color-text-secondary: #475569; /* slate-600 secondary body */
+  --color-text-muted: #94A3B8; /* slate-400 placeholders/timestamps */
+  
+  --color-accent: #6366F1; /* vibrant indigo/violet accent */
+  --color-accent-hover: #4F46E5; /* deep violet hover */
+  --color-accent-subtle: #F5F3FF; /* violet-50 violet background tint */
 
-  /* Status Colors */
-  --color-success: #1E8E5A;
-  --color-success-subtle: #E6F6EE;
-  --color-info: #2F5DE0;
-  --color-info-subtle: #EAF0FE;
-  --color-warning: #B4740E;
-  --color-warning-subtle: #FBF0DD;
-  --color-alert: #C24B1F;
-  --color-alert-subtle: #FCEAE1;
-  --color-danger: #C1352E;
-  --color-danger-subtle: #FBEAE9;
-  --color-neutral-status: #6B7280;
-  --color-neutral-subtle: #EEF0F3;
+  /* Status Colors: Cohesive with Slate & Violet */
+  --color-success: #0D9488; /* premium teal green */
+  --color-success-subtle: #F0FDF4;
+  --color-info: #3B82F6; /* soft royal blue */
+  --color-info-subtle: #EFF6FF;
+  --color-warning: #D97706; /* rich warm amber */
+  --color-warning-subtle: #FFFBEB;
+  --color-alert: #E11D48; /* rose alert red */
+  --color-alert-subtle: #FFF1F2;
+  --color-danger: #EF4444; /* red danger */
+  --color-danger-subtle: #FEF2F2;
+  --color-neutral-status: #64748B; /* cool grey status */
+  --color-neutral-subtle: #F8FAFC;
 }
 
 body {
@@ -39,8 +41,84 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Common focus rings */
-input:focus, select:focus, textarea:focus, button:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
+/* Animations for premium interactive feel */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Dynamic design system styling helper variables */
+
+/* Premium Spring Button Action */
+.btn-premium {
+  @apply transition-all duration-200 ease-out active:scale-[0.96] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-[#6366F1]/20;
+}
+
+/* Card lift and soft amethyst shade styling */
+.card-premium {
+  @apply bg-surface border border-border rounded-md shadow-[0_4px_20px_-2px_rgba(99,102,241,0.05)] transition-all duration-300 hover:shadow-[0_10px_30px_-5px_rgba(99,102,241,0.08)] hover:border-[#6366F1]/30;
+}
+
+/* Custom premium inputs focus behavior */
+.input-premium {
+  @apply bg-surface border border-border rounded-md px-12 py-8 text-xs text-text-primary transition-all duration-200 placeholder-text-muted focus:border-accent focus:ring-4 focus:ring-[#6366F1]/10 focus:outline-none focus:scale-[1.005];
+}
+
+/* Status pill baseline text styles */
+.badge-premium {
+  @apply px-10 py-3 rounded-full text-[10px] font-bold tracking-wide border transition-colors select-none;
+}
+
+/* Scrollbars custom track styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
 }

@@ -393,7 +393,7 @@ export default function Reports() {
             {/* Summary KPIs */}
             {utilSummary && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Total Scoped Assets</span>
                     <span className="p-4 rounded bg-info-subtle text-info">
@@ -403,7 +403,7 @@ export default function Reports() {
                   <div className="text-2xl font-bold text-text-primary mt-12">{utilSummary.totalAssets}</div>
                 </div>
 
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Total Utilization</span>
                     <span className="p-4 rounded bg-info-subtle text-info">
@@ -413,7 +413,7 @@ export default function Reports() {
                   <div className="text-2xl font-bold text-text-primary mt-12">{utilSummary.totalUtilizationHours} hrs</div>
                 </div>
 
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Average Asset Usage</span>
                     <span className="p-4 rounded bg-success-subtle text-success">
@@ -423,7 +423,7 @@ export default function Reports() {
                   <div className="text-2xl font-bold text-text-primary mt-12">{utilSummary.averageUtilizationHours} hrs</div>
                 </div>
 
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Top Category</span>
                     <span className="p-4 rounded bg-warning-subtle text-warning">
@@ -438,7 +438,7 @@ export default function Reports() {
             {/* Grid Layout for Most-Used vs Idle */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-24">
               {/* Most Used Assets */}
-              <div className="p-24 rounded border border-border bg-surface space-y-16">
+              <div className="p-24 card-premium animate-scale-up space-y-16">
                 <h3 className="text-lg font-semibold text-text-primary">Most-Used Assets</h3>
                 <div className="space-y-16">
                   {mostUsed.length === 0 ? (
@@ -467,7 +467,7 @@ export default function Reports() {
               </div>
 
               {/* Idle / Low Utilization Assets */}
-              <div className="p-24 rounded border border-border bg-surface space-y-16">
+              <div className="p-24 card-premium animate-scale-up space-y-16">
                 <h3 className="text-lg font-semibold text-text-primary flex items-center gap-8">
                   <AlertTriangle className="w-18 h-18 text-warning" />
                   <span>Idle / Low Usage Assets</span>
@@ -496,7 +496,7 @@ export default function Reports() {
             </div>
 
             {/* Detailed All Assets Table */}
-            <div className="p-24 rounded border border-border bg-surface space-y-16">
+            <div className="p-24 card-premium animate-scale-up space-y-16">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-text-primary">All Asset Utilization Metrics</h3>
                 <button
@@ -553,7 +553,7 @@ export default function Reports() {
             {/* Summary KPIs */}
             {maintSummary && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Total Raised Tickets</span>
                     <span className="p-4 rounded bg-info-subtle text-info">
@@ -563,7 +563,7 @@ export default function Reports() {
                   <div className="text-2xl font-bold text-text-primary mt-12">{maintSummary.totalRequests}</div>
                 </div>
 
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Resolved Requests</span>
                     <span className="p-4 rounded bg-success-subtle text-success">
@@ -573,7 +573,7 @@ export default function Reports() {
                   <div className="text-2xl font-bold text-text-primary mt-12">{maintSummary.byStatus?.Resolved || 0}</div>
                 </div>
 
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Pending Reviews</span>
                     <span className="p-4 rounded bg-warning-subtle text-warning">
@@ -583,7 +583,7 @@ export default function Reports() {
                   <div className="text-2xl font-bold text-text-primary mt-12">{maintSummary.byStatus?.Pending || 0}</div>
                 </div>
 
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Critical Level Failures</span>
                     <span className="p-4 rounded bg-danger-subtle text-danger">
@@ -598,7 +598,7 @@ export default function Reports() {
             {/* Grid Layout for breakdowns by Category vs breakdown lists */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-24">
               {/* Category Failure distributions */}
-              <div className="p-24 rounded border border-border bg-surface space-y-16">
+              <div className="p-24 card-premium animate-scale-up space-y-16">
                 <h3 className="text-lg font-semibold text-text-primary">Breakdown Rate by Category</h3>
                 <div className="divide-y divide-border">
                   {maintByCategory.length === 0 ? (
@@ -622,7 +622,7 @@ export default function Reports() {
               </div>
 
               {/* High breakdown frequency assets */}
-              <div className="p-24 rounded border border-border bg-surface space-y-16">
+              <div className="p-24 card-premium animate-scale-up space-y-16">
                 <h3 className="text-lg font-semibold text-text-primary flex items-center gap-8">
                   <AlertTriangle className="w-18 h-18 text-danger" />
                   <span>High-Breakdown Assets</span>
@@ -655,7 +655,7 @@ export default function Reports() {
             </div>
 
             {/* Breakdown Priority Distribution Details Table */}
-            <div className="p-24 rounded border border-border bg-surface space-y-16">
+            <div className="p-24 card-premium animate-scale-up space-y-16">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-text-primary">Breakdown Distribution Matrix</h3>
                 <button
@@ -710,7 +710,7 @@ export default function Reports() {
             {/* Summary KPIs */}
             {schedSummary && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Due for Routine Maintenance</span>
                     <span className="p-4 rounded bg-warning-subtle text-warning">
@@ -720,7 +720,7 @@ export default function Reports() {
                   <div className="text-2xl font-bold text-text-primary mt-12">{schedSummary.totalDueForMaintenance}</div>
                 </div>
 
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Due for Retirement</span>
                     <span className="p-4 rounded bg-danger-subtle text-danger">
@@ -730,7 +730,7 @@ export default function Reports() {
                   <div className="text-2xl font-bold text-text-primary mt-12">{schedSummary.totalDueForRetirement}</div>
                 </div>
 
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Retired Assets Count</span>
                     <span className="p-4 rounded bg-neutral-subtle text-text-secondary">
@@ -745,7 +745,7 @@ export default function Reports() {
             {/* Grid Tables for Maintenance Schedule vs Retirement */}
             <div className="space-y-24">
               {/* Due for Maintenance Table */}
-              <div className="p-24 rounded border border-border bg-surface space-y-16">
+              <div className="p-24 card-premium animate-scale-up space-y-16">
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-semibold text-text-primary">Routine Maintenance Due (6-Month Inspect Intervals)</h3>
                   <button
@@ -802,7 +802,7 @@ export default function Reports() {
               </div>
 
               {/* Due for Retirement Table */}
-              <div className="p-24 rounded border border-border bg-surface space-y-16">
+              <div className="p-24 card-premium animate-scale-up space-y-16">
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-semibold text-danger">Retirement Lifecycle Schedule</h3>
                   <button
@@ -862,7 +862,7 @@ export default function Reports() {
             {/* Summary KPIs */}
             {deptSummary && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Total Active Departments</span>
                     <span className="p-4 rounded bg-info-subtle text-info">
@@ -872,7 +872,7 @@ export default function Reports() {
                   <div className="text-2xl font-bold text-text-primary mt-12">{deptSummary.totalDepartmentsCount}</div>
                 </div>
 
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Total Allocated Assets</span>
                     <span className="p-4 rounded bg-success-subtle text-success">
@@ -882,7 +882,7 @@ export default function Reports() {
                   <div className="text-2xl font-bold text-text-primary mt-12">{deptSummary.totalAllocatedAssets}</div>
                 </div>
 
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Total Capital Assigned</span>
                     <span className="p-4 rounded bg-warning-subtle text-warning">
@@ -895,7 +895,7 @@ export default function Reports() {
             )}
 
             {/* Department Summary Table */}
-            <div className="p-24 rounded border border-border bg-surface space-y-16">
+            <div className="p-24 card-premium animate-scale-up space-y-16">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-text-primary">Department-wise Asset Allocation</h3>
                 <button
@@ -974,7 +974,7 @@ export default function Reports() {
             {/* Summary KPIs */}
             {heatmapSummary && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Total Scheduled Reservations</span>
                     <span className="p-4 rounded bg-info-subtle text-info">
@@ -984,7 +984,7 @@ export default function Reports() {
                   <div className="text-2xl font-bold text-text-primary mt-12">{heatmapSummary.totalBookings}</div>
                 </div>
 
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Peak Reservation Day</span>
                     <span className="p-4 rounded bg-success-subtle text-success">
@@ -994,7 +994,7 @@ export default function Reports() {
                   <div className="text-2xl font-bold text-text-primary mt-12">{heatmapSummary.peakDay}</div>
                 </div>
 
-                <div className="p-16 rounded border border-border bg-surface flex flex-col justify-between h-[120px]">
+                <div className="p-16 card-premium animate-scale-up flex flex-col justify-between h-[120px]">
                   <div className="flex justify-between items-start">
                     <span className="text-xs font-semibold text-text-secondary">Peak Usage Time Slot</span>
                     <span className="p-4 rounded bg-warning-subtle text-warning">
@@ -1007,7 +1007,7 @@ export default function Reports() {
             )}
 
             {/* Visual Heatmap Grid */}
-            <div className="p-24 rounded border border-border bg-surface space-y-24">
+            <div className="p-24 card-premium animate-scale-up space-y-24">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-text-primary flex items-center gap-8">
                   <Grid className="w-18 h-18 text-accent" />

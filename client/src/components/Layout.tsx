@@ -99,12 +99,14 @@ export default function Layout() {
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-bg">
       {/* Sidebar (Desktop) */}
-      <aside className="hidden md:flex md:w-[240px] md:flex-col border-r border-border bg-surface">
+      <aside className="hidden md:flex md:w-[240px] md:flex-col border-r border-border bg-surface relative z-30 shadow-sm">
         {/* Brand Header */}
-        <div className="h-16 flex items-center px-24 border-b border-border">
-          <Link to="/" className="flex items-center gap-8 font-sans font-bold text-lg text-accent">
-            <span className="bg-accent text-white px-8 py-4 rounded text-sm font-black">AF</span>
-            <span>AssetFlow</span>
+        <div className="h-16 flex items-center px-24 border-b border-border bg-surface">
+          <Link to="/" className="flex items-center gap-8 font-sans font-black text-md text-text-primary tracking-tight select-none">
+            <span className="bg-gradient-to-r from-accent to-accent-hover text-white px-10 py-6 rounded text-xs font-black shadow-sm">
+              AF
+            </span>
+            <span className="bg-gradient-to-r from-text-primary to-text-secondary bg-clip-text text-transparent">AssetFlow</span>
           </Link>
         </div>
 
@@ -119,9 +121,9 @@ export default function Layout() {
               <Link
                 key={item.name}
                 to={item.path}
-                className={`flex items-center gap-12 px-12 py-8 text-sm font-medium rounded transition-colors ${
+                className={`flex items-center gap-12 px-12 py-8 text-xs font-semibold rounded transition-all duration-200 active:scale-[0.98] ${
                   isActive 
-                    ? 'bg-accent-subtle text-accent' 
+                    ? 'bg-accent text-white shadow-md shadow-accent/15 scale-[1.02]' 
                     : 'text-text-secondary hover:bg-surface-sunken hover:text-text-primary'
                 }`}
               >
@@ -135,17 +137,17 @@ export default function Layout() {
         {/* User profile footer */}
         <div className="p-16 border-t border-border bg-surface-sunken">
           <div className="flex items-center gap-12 mb-12">
-            <div className="w-32 h-32 rounded-full bg-accent text-white flex items-center justify-center font-semibold text-sm">
+            <div className="w-32 h-32 rounded-full bg-accent text-white flex items-center justify-center font-bold text-xs shadow-sm">
               {user?.name?.charAt(0) || 'U'}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-text-primary truncate">{user?.name || 'User'}</p>
-               <p className="text-xs text-text-muted truncate">{user?.role || 'Guest'}</p>
+              <p className="text-xs font-bold text-text-primary truncate">{user?.name || 'User'}</p>
+              <p className="text-[10px] font-semibold text-text-muted truncate">{user?.role || 'Guest'}</p>
             </div>
           </div>
           <button 
             onClick={handleLogout}
-            className="flex w-full items-center justify-center gap-8 px-12 py-8 text-xs font-semibold text-text-secondary hover:text-accent rounded border border-border bg-surface hover:bg-surface-sunken transition-colors"
+            className="btn-premium flex w-full items-center justify-center gap-8 px-12 py-8 text-[11px] font-bold text-text-secondary hover:text-accent rounded border border-border bg-surface hover:bg-surface-sunken"
           >
             <LogOut className="w-16 h-16" />
             <span>Sign Out</span>
@@ -158,20 +160,22 @@ export default function Layout() {
         <div className="fixed inset-0 z-50 flex md:hidden">
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-text-primary/45 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-text-primary/40 backdrop-blur-xs transition-opacity"
             onClick={() => setIsMobileMenuOpen(false)}
           ></div>
           
           {/* Drawer Content */}
-          <div className="relative flex w-[240px] flex-col bg-surface border-r border-border h-full p-16 shadow-xl animate-fade-in">
+          <div className="relative flex w-[240px] flex-col bg-surface border-r border-border h-full p-16 shadow-2xl animate-scale-up">
             {/* Header */}
             <div className="h-16 flex items-center justify-between px-8 border-b border-border mb-16">
               <Link 
                 to="/" 
-                className="flex items-center gap-8 font-sans font-bold text-lg text-accent"
+                className="flex items-center gap-8 font-sans font-black text-md text-text-primary tracking-tight"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <span className="bg-accent text-white px-8 py-4 rounded text-sm font-black">AF</span>
+                <span className="bg-gradient-to-r from-accent to-accent-hover text-white px-10 py-6 rounded text-xs font-black shadow-sm">
+                  AF
+                </span>
                 <span>AssetFlow</span>
               </Link>
               <button 
@@ -194,9 +198,9 @@ export default function Layout() {
                     key={item.name}
                     to={item.path}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-12 px-12 py-8 text-sm font-medium rounded transition-colors ${
+                    className={`flex items-center gap-12 px-12 py-8 text-xs font-semibold rounded transition-all duration-200 active:scale-[0.98] ${
                       isActive 
-                        ? 'bg-accent-subtle text-accent' 
+                        ? 'bg-accent text-white shadow-md shadow-accent/15 scale-[1.02]' 
                         : 'text-text-secondary hover:bg-surface-sunken hover:text-text-primary'
                     }`}
                   >
@@ -210,12 +214,12 @@ export default function Layout() {
             {/* User Info Footer */}
             <div className="p-16 border-t border-border bg-surface-sunken rounded mt-16">
               <div className="flex items-center gap-12 mb-12">
-                <div className="w-32 h-32 rounded-full bg-accent text-white flex items-center justify-center font-semibold text-sm">
+                <div className="w-32 h-32 rounded-full bg-accent text-white flex items-center justify-center font-bold text-xs shadow-sm">
                   {user?.name?.charAt(0) || 'U'}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-text-primary truncate">{user?.name || 'User'}</p>
-                  <p className="text-xs text-text-muted truncate">{user?.role || 'Guest'}</p>
+                  <p className="text-xs font-bold text-text-primary truncate">{user?.name || 'User'}</p>
+                  <p className="text-[10px] font-semibold text-text-muted truncate">{user?.role || 'Guest'}</p>
                 </div>
               </div>
               <button 
@@ -223,7 +227,7 @@ export default function Layout() {
                   setIsMobileMenuOpen(false);
                   handleLogout();
                 }}
-                className="flex w-full items-center justify-center gap-8 px-12 py-8 text-xs font-semibold text-text-secondary hover:text-accent rounded border border-border bg-surface hover:bg-surface-sunken transition-colors"
+                className="btn-premium flex w-full items-center justify-center gap-8 px-12 py-8 text-[11px] font-bold text-text-secondary hover:text-accent rounded border border-border bg-surface hover:bg-surface-sunken"
               >
                 <LogOut className="w-16 h-16" />
                 <span>Sign Out</span>
@@ -234,9 +238,9 @@ export default function Layout() {
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative z-10">
         {/* Header */}
-        <header className="h-16 bg-surface border-b border-border flex items-center justify-between px-24">
+        <header className="h-16 bg-surface border-b border-border flex items-center justify-between px-24 relative z-40 shadow-xs">
           <div className="flex items-center gap-12">
             {/* Hamburger Trigger button */}
             <button
@@ -245,7 +249,7 @@ export default function Layout() {
             >
               <Menu className="w-20 h-20" />
             </button>
-            <h2 className="text-lg font-semibold text-text-primary">
+            <h2 className="text-sm font-black tracking-tight text-text-primary">
               {navItems.find(item => item.path === location.pathname)?.name || 'AssetFlow'}
             </h2>
           </div>
@@ -255,26 +259,26 @@ export default function Layout() {
             <div className="relative" ref={dropdownRef}>
               <button 
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="p-8 text-text-secondary hover:text-accent hover:bg-surface-sunken rounded relative flex items-center justify-center transition-colors"
+                className="p-8 text-text-secondary hover:text-accent hover:bg-surface-sunken rounded relative flex items-center justify-center transition-colors focus:outline-none"
                 title="Notifications"
               >
                 <Bell className="w-20 h-20" />
                 {unreadCount > 0 && (
-                  <span className="absolute top-4 right-4 w-8 h-8 bg-alert rounded-full flex items-center justify-center">
+                  <span className="absolute top-4 right-4 w-8 h-8 bg-alert rounded-full flex items-center justify-center shadow-sm">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-alert opacity-75"></span>
                   </span>
                 )}
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-8 w-[320px] bg-surface border border-border rounded shadow-lg z-50 overflow-hidden flex flex-col max-h-[400px]">
+                <div className="absolute right-0 mt-8 w-[320px] bg-surface border border-border rounded shadow-xl z-50 overflow-hidden flex flex-col max-h-[400px] animate-scale-up">
                   {/* Dropdown Header */}
-                  <div className="px-16 py-12 border-b border-border flex items-center justify-between bg-[#F7F8FA]">
-                    <span className="text-xs font-bold text-text-primary">Notifications ({notifications.length})</span>
+                  <div className="px-16 py-12 border-b border-border flex items-center justify-between bg-surface-sunken">
+                    <span className="text-[11px] font-bold text-text-primary">Notifications ({notifications.length})</span>
                     {unreadCount > 0 && (
                       <button 
                         onClick={handleMarkAllAsRead}
-                        className="text-[10px] text-accent hover:text-accent-hover font-semibold flex items-center gap-4"
+                        className="text-[10px] text-accent hover:text-accent-hover font-semibold flex items-center gap-4 focus:outline-none"
                       >
                         <CheckCheck className="w-12 h-12" />
                         <span>Mark all read</span>
@@ -285,7 +289,7 @@ export default function Layout() {
                   {/* Dropdown List */}
                   <div className="overflow-y-auto divide-y divide-border">
                     {notifications.length === 0 ? (
-                      <div className="p-24 text-center text-xs text-text-muted">
+                      <div className="p-24 text-center text-xs text-text-muted italic">
                         No notifications yet.
                       </div>
                     ) : (
@@ -293,8 +297,8 @@ export default function Layout() {
                         <div 
                           key={n.id} 
                           onClick={() => !n.isRead && handleMarkAsRead(n.id)}
-                          className={`p-12 hover:bg-[#F7F8FA]/60 transition-colors cursor-pointer text-xs flex gap-8 items-start ${
-                            !n.isRead ? 'bg-accent-subtle/30 font-medium' : ''
+                          className={`p-12 hover:bg-surface-sunken/40 transition-colors cursor-pointer text-xs flex gap-8 items-start ${
+                            !n.isRead ? 'bg-accent-subtle/50 font-semibold' : ''
                           }`}
                         >
                           {!n.isRead && (
@@ -316,16 +320,16 @@ export default function Layout() {
 
             <div className="h-20 w-1 bg-border"></div>
 
-            <div className="flex items-center gap-8 text-sm text-text-secondary">
-              <User className="w-16 h-16" />
+            <div className="flex items-center gap-8 text-xs font-bold text-text-secondary">
+              <User className="w-16 h-16 text-text-muted" />
               <span>{user?.email || 'Not logged in'}</span>
             </div>
           </div>
         </header>
 
         {/* Screen Content */}
-        <main className="flex-1 overflow-auto p-24">
-          <div className="max-w-[1280px] mx-auto">
+        <main className="flex-1 overflow-auto p-24 bg-bg relative z-10">
+          <div className="max-w-[1280px] mx-auto animate-slide-up">
             <Outlet />
           </div>
         </main>
