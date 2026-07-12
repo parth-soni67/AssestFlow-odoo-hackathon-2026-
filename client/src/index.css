@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Color palette from DESIGN_GUIDE.md */
+  --color-bg: #F7F8FA;
+  --color-surface: #FFFFFF;
+  --color-surface-sunken: #EEF0F3;
+  --color-border: #DDE1E6;
+  --color-border-strong: #C4C9D1;
+  --color-text-primary: #1A1D23;
+  --color-text-secondary: #5B6270;
+  --color-text-muted: #8A909C;
+  --color-accent: #2F5DE0;
+  --color-accent-hover: #274CBD;
+  --color-accent-subtle: #EAF0FE;
+
+  /* Status Colors */
+  --color-success: #1E8E5A;
+  --color-info: #2F5DE0;
+  --color-warning: #B4740E;
+  --color-alert: #C24B1F;
+  --color-danger: #C1352E;
+  --color-neutral-status: #6B7280;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Common focus rings */
+input:focus, select:focus, textarea:focus, button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
