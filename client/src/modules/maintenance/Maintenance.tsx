@@ -230,46 +230,51 @@ export default function Maintenance() {
   const isManager = user?.role === 'Admin' || user?.role === 'AssetManager';
 
   return (
-    <div className="space-y-24">
+    <div className="flex flex-col gap-6 font-sans animate-fade-in" style={{ color: 'var(--color-text-primary)' }}>
       {/* Header Row */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b" style={{ borderColor: 'var(--color-border)' }}>
         <div>
-          <h1 className="text-xl font-bold text-text-primary tracking-tight">Maintenance Management</h1>
-          <p className="text-sm text-text-secondary mt-4">
+          <h1 className="text-2xl font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>Maintenance Management</h1>
+          <p className="text-sm mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>
             Track asset physical service actions, raise repair orders, and monitor equipment uptime.
           </p>
         </div>
 
         <button
           onClick={() => setIsNewRequestOpen(true)}
-          className="px-16 py-8 rounded-sm bg-accent hover:bg-accent-hover text-white text-xs font-semibold flex items-center gap-8 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/15"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold text-white transition-colors"
+          style={{ background: 'var(--color-accent)' }}
+          onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-accent-hover)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'var(--color-accent)')}
         >
-          <Plus className="w-16 h-16" />
+          <Plus className="w-4 h-4" />
           <span>Raise Request</span>
         </button>
       </div>
 
       {error && (
-        <div className="p-16 rounded border border-danger/20 bg-danger-subtle text-danger text-xs font-medium flex items-center gap-8">
-          <AlertTriangle className="w-16 h-16 shrink-0" />
+        <div className="px-4 py-3 border rounded text-xs font-semibold flex items-center gap-2" style={{ borderColor: 'var(--color-danger)', background: 'var(--color-danger-subtle)', color: 'var(--color-danger)' }}>
+          <AlertTriangle className="w-4 h-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {/* Main Grid View */}
-      <div className="grid grid-cols-1 gap-24">
-        {/* Filters Panel */}
-        <div className="p-16 rounded border border-border bg-surface flex flex-wrap items-center justify-between gap-16">
-          <div className="flex items-center gap-12 text-xs font-medium text-text-secondary">
-            <Filter className="w-14 h-14 text-text-muted" />
-            <span>Filters:</span>
+      <div className="flex flex-col gap-4">
+        {/* Filters Panel — compact row like AssetDirectory */}
+        <div className="flex flex-col md:flex-row gap-2 p-3 rounded-lg border items-center justify-between" style={{ background: 'var(--color-surface-sunken)', borderColor: 'var(--color-border)' }}>
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            <div className="flex items-center gap-2" style={{ color: 'var(--color-text-secondary)' }}>
+              <Filter className="w-4 h-4" style={{ color: 'var(--color-text-muted)' }} />
+              <span className="text-sm font-medium">Filters:</span>
+            </div>
 
-            {/* Status Filter */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-wrap gap-2">
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="bg-surface border border-border rounded-md px-12 py-6 text-xs text-text-primary font-medium focus:outline-none focus:border-accent"
+                className="h-9 px-3 rounded-md border text-sm focus:outline-none"
+                style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text-secondary)' }}
               >
                 <option value="all">All Statuses</option>
                 <option value="Pending">Pending</option>
@@ -279,14 +284,12 @@ export default function Maintenance() {
                 <option value="InProgress">In Progress</option>
                 <option value="Resolved">Resolved</option>
               </select>
-            </div>
 
-            {/* Priority Filter */}
-            <div className="flex flex-col gap-4">
               <select
                 value={priorityFilter}
                 onChange={(e) => setPriorityFilter(e.target.value)}
-                className="bg-surface border border-border rounded-md px-12 py-6 text-xs text-text-primary font-medium focus:outline-none focus:border-accent"
+                className="h-9 px-3 rounded-md border text-sm focus:outline-none"
+                style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text-secondary)' }}
               >
                 <option value="all">All Priorities</option>
                 <option value="Low">Low</option>
@@ -297,86 +300,80 @@ export default function Maintenance() {
             </div>
           </div>
 
-          <div className="text-xs font-semibold text-text-muted">
+          <div className="text-xs font-semibold shrink-0 mt-2 md:mt-0" style={{ color: 'var(--color-text-muted)' }}>
             Showing {filteredRequests.length} of {requests.length} requests
           </div>
         </div>
 
         {/* Requests List */}
         {isLoading ? (
-          <div className="p-48 text-center text-sm text-text-secondary flex justify-center items-center gap-8 bg-surface border border-border rounded">
-            <Loader2 className="w-16 h-16 animate-spin text-accent" />
+          <div className="py-12 text-center text-sm flex justify-center items-center gap-2 rounded-lg border" style={{ color: 'var(--color-text-secondary)', borderColor: 'var(--color-border)', background: 'var(--color-surface)' }}>
+            <Loader2 className="w-4 h-4 animate-spin" style={{ color: 'var(--color-accent)' }} />
             <span>Loading maintenance requests...</span>
           </div>
         ) : filteredRequests.length === 0 ? (
-          <div className="p-48 text-center bg-surface border border-border rounded text-text-secondary flex flex-col items-center justify-center space-y-12">
-            <Wrench className="w-32 h-32 text-text-muted stroke-[1.5]" />
-            <p className="text-sm font-semibold text-text-primary">No maintenance requests found</p>
-            <p className="text-xs max-w-sm text-text-muted">
+          <div className="py-16 text-center rounded-lg border flex flex-col items-center justify-center gap-3" style={{ color: 'var(--color-text-secondary)', borderColor: 'var(--color-border)', background: 'var(--color-surface)' }}>
+            <Wrench className="w-10 h-10 stroke-[1.5]" style={{ color: 'var(--color-text-muted)' }} />
+            <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>No maintenance requests found</p>
+            <p className="text-xs max-w-sm" style={{ color: 'var(--color-text-muted)' }}>
               There are no service orders matches current filters. Raise a new request to get started.
             </p>
           </div>
         ) : (
-          <div className="rounded border border-border bg-surface overflow-hidden">
+          <div className="rounded-lg border overflow-hidden" style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-[#F7F8FA] border-b border-border text-text-secondary font-bold select-none">
-                    <th className="py-12 px-16 w-80">ID</th>
-                    <th className="py-12 px-16 w-120">Asset Tag</th>
-                    <th className="py-12 px-16">Asset Name</th>
-                    <th className="py-12 px-16 w-100">Priority</th>
-                    <th className="py-12 px-16 w-140">Status</th>
-                    <th className="py-12 px-16 w-140">Technician</th>
-                    <th className="py-12 px-16">Issue Description</th>
-                    <th className="py-12 px-16 w-120 text-right">Actions</th>
+                  <tr className="border-b font-semibold select-none" style={{ background: 'var(--color-surface-sunken)', borderColor: 'var(--color-border)', color: 'var(--color-text-secondary)' }}>
+                    <th className="py-3 px-4 w-[80px]">ID</th>
+                    <th className="py-3 px-4 w-[120px]">Asset Tag</th>
+                    <th className="py-3 px-4">Asset Name</th>
+                    <th className="py-3 px-4 w-[100px]">Priority</th>
+                    <th className="py-3 px-4 w-[140px]">Status</th>
+                    <th className="py-3 px-4 w-[140px]">Technician</th>
+                    <th className="py-3 px-4">Issue Description</th>
+                    <th className="py-3 px-4 w-[120px] text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border text-text-primary font-sans">
+                <tbody className="divide-y divide-[var(--color-border)] font-sans" style={{ color: 'var(--color-text-primary)' }}>
                   {filteredRequests.map((req) => (
-                    <tr key={req.id} className="hover:bg-neutral-subtle/50 transition-colors">
-                      <td className="py-12 px-16 font-mono font-bold text-text-secondary">#{req.id}</td>
-                      <td className="py-12 px-16 font-mono text-text-primary font-semibold">{req.asset?.assetTag || 'N/A'}</td>
-                      <td className="py-12 px-16 font-semibold text-text-primary">{req.asset?.name || 'Unknown Asset'}</td>
-                      <td className="py-12 px-16">
-                        <span className={`px-8 py-2 rounded-full border text-[10px] font-bold ${getPriorityBadgeClass(req.priority)}`}>
+                    <tr key={req.id} className="transition-colors hover:bg-neutral-subtle/50">
+                      <td className="py-3 px-4 font-mono font-bold" style={{ color: 'var(--color-text-secondary)' }}>#{req.id}</td>
+                      <td className="py-3 px-4 font-mono font-medium">{req.asset?.assetTag || 'N/A'}</td>
+                      <td className="py-3 px-4 font-medium">{req.asset?.name || 'Unknown Asset'}</td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2 py-0.5 rounded border text-[10px] font-bold ${getPriorityBadgeClass(req.priority)}`}>
                           {req.priority}
                         </span>
                       </td>
-                      <td className="py-12 px-16">
-                        <span className={`px-8 py-2 rounded-full border text-[10px] font-bold ${getStatusBadgeClass(req.status)}`}>
+                      <td className="py-3 px-4">
+                        <span className={`px-2 py-0.5 rounded border text-[10px] font-bold ${getStatusBadgeClass(req.status)}`}>
                           {formatStatusText(req.status)}
                         </span>
                       </td>
-                      <td className="py-12 px-16 font-medium text-text-secondary">
+                      <td className="py-3 px-4 font-medium" style={{ color: 'var(--color-text-secondary)' }}>
                         {req.assignedTechnician ? (
-                          <span className="flex items-center gap-4 text-text-primary font-semibold">
-                            <User className="w-12 h-12 text-text-muted" />
+                          <span className="flex items-center gap-1.5 font-medium" style={{ color: 'var(--color-text-primary)' }}>
+                            <User className="w-3.5 h-3.5" style={{ color: 'var(--color-text-muted)' }} />
                             {req.assignedTechnician}
                           </span>
                         ) : (
-                          <span className="text-text-muted italic">Unassigned</span>
+                          <span className="italic" style={{ color: 'var(--color-text-muted)' }}>Unassigned</span>
                         )}
                       </td>
-                      <td className="py-12 px-16 text-text-secondary max-w-sm truncate" title={req.issueDescription}>
+                      <td className="py-3 px-4 max-w-xs truncate" style={{ color: 'var(--color-text-secondary)' }} title={req.issueDescription}>
                         {req.issueDescription}
                       </td>
-                      <td className="py-12 px-16 text-right">
+                      <td className="py-3 px-4 text-right">
                         {isManager ? (
-                          <div className="flex justify-end gap-6">
+                          <div className="flex justify-end gap-1.5">
                             {/* Pending State -> Approve/Reject */}
                             {req.status === 'Pending' && (
                               <>
-                                <button
-                                  onClick={() => handleApprove(req.id)}
-                                  className="px-8 py-4 rounded-sm bg-success text-white text-[10px] font-semibold hover:bg-success/90 focus:outline-none"
-                                >
+                                <button onClick={() => handleApprove(req.id)} className="px-2 py-1 rounded text-white text-[10px] font-semibold hover:opacity-90 focus:outline-none" style={{ background: 'var(--color-success)' }}>
                                   Approve
                                 </button>
-                                <button
-                                  onClick={() => handleReject(req.id)}
-                                  className="px-8 py-4 rounded-sm bg-danger text-white text-[10px] font-semibold hover:bg-danger/90 focus:outline-none"
-                                >
+                                <button onClick={() => handleReject(req.id)} className="px-2 py-1 rounded text-white text-[10px] font-semibold hover:opacity-90 focus:outline-none" style={{ background: 'var(--color-danger)' }}>
                                   Reject
                                 </button>
                               </>
@@ -384,45 +381,32 @@ export default function Maintenance() {
 
                             {/* Approved State -> Assign Technician */}
                             {req.status === 'Approved' && (
-                              <button
-                                onClick={() => {
-                                  setAssigningRequestId(req.id);
-                                  setTechnicianName('');
-                                }}
-                                className="px-8 py-4 rounded-sm bg-accent text-white text-[10px] font-semibold hover:bg-accent-hover focus:outline-none"
-                              >
+                              <button onClick={() => { setAssigningRequestId(req.id); setTechnicianName(''); }} className="px-2 py-1 rounded text-white text-[10px] font-semibold hover:opacity-90 focus:outline-none" style={{ background: 'var(--color-accent)' }}>
                                 Assign Tech
                               </button>
                             )}
 
                             {/* Technician Assigned -> Start Work */}
                             {req.status === 'TechnicianAssigned' && (
-                              <button
-                                onClick={() => handleStartWork(req.id)}
-                                className="px-8 py-4 rounded-sm bg-info text-white text-[10px] font-semibold hover:bg-info/90 focus:outline-none"
-                              >
+                              <button onClick={() => handleStartWork(req.id)} className="px-2 py-1 rounded text-white text-[10px] font-semibold hover:opacity-90 focus:outline-none" style={{ background: 'var(--color-info)' }}>
                                 Start Work
                               </button>
                             )}
 
                             {/* In Progress -> Resolve */}
                             {req.status === 'InProgress' && (
-                              <button
-                                onClick={() => handleResolve(req.id)}
-                                className="px-8 py-4 rounded-sm bg-success text-white text-[10px] font-semibold hover:bg-success/90 focus:outline-none"
-                              >
+                              <button onClick={() => handleResolve(req.id)} className="px-2 py-1 rounded text-white text-[10px] font-semibold hover:opacity-90 focus:outline-none" style={{ background: 'var(--color-success)' }}>
                                 Resolve
                               </button>
                             )}
 
                             {/* Finished state placeholder */}
                             {(req.status === 'Resolved' || req.status === 'Rejected') && (
-                              <span className="text-[10px] text-text-muted italic select-none">No actions</span>
+                              <span className="text-[10px] italic select-none" style={{ color: 'var(--color-text-muted)' }}>No actions</span>
                             )}
                           </div>
                         ) : (
-                          // Non-manager can only see no actions
-                          <span className="text-[10px] text-text-muted italic select-none">
+                          <span className="text-[10px] italic select-none" style={{ color: 'var(--color-text-muted)' }}>
                             {req.status === 'Pending' ? 'Awaiting Approval' : 'No Actions'}
                           </span>
                         )}
@@ -438,92 +422,43 @@ export default function Maintenance() {
 
       {/* Modal: Raise Request */}
       {isNewRequestOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-16">
-          {/* Backdrop */}
-          <div 
-            className="fixed inset-0 bg-text-primary/40 backdrop-blur-xs"
-            onClick={() => setIsNewRequestOpen(false)}
-          ></div>
-
-          {/* Dialog Panel */}
-          <div className="relative w-full max-w-md bg-surface border border-border rounded shadow-xl overflow-hidden animate-fade-in">
-            {/* Header */}
-            <div className="px-24 py-16 border-b border-border flex justify-between items-center bg-[#F7F8FA]">
-              <h3 className="text-sm font-bold text-text-primary flex items-center gap-8">
-                <Wrench className="w-16 h-16 text-accent" />
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 animate-fade-in" style={{ background: 'rgba(0,0,0,0.3)' }}>
+          <div className="w-full max-w-[500px] rounded-lg border shadow-[0_8px_24px_0_rgba(0,0,0,0.12)] animate-scale-up overflow-hidden" style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
+            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--color-border)', background: 'var(--color-surface-sunken)' }}>
+              <h3 className="text-base font-semibold flex items-center gap-2" style={{ color: 'var(--color-text-primary)' }}>
+                <Wrench className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                 <span>Raise Maintenance Request</span>
               </h3>
-              <button
-                onClick={() => setIsNewRequestOpen(false)}
-                className="text-text-muted hover:text-text-primary text-xs font-semibold focus:outline-none"
-              >
-                Close
+              <button onClick={() => setIsNewRequestOpen(false)} className="text-sm font-semibold focus:outline-none" style={{ color: 'var(--color-text-muted)' }}>
+                ✕
               </button>
             </div>
 
-            {/* Form */}
-            <form onSubmit={handleCreateRequest} className="p-24 space-y-16">
-              {/* Asset Select */}
-              <div className="space-y-6">
-                <label className="text-xs font-semibold text-text-secondary block">Select Asset</label>
-                <select
-                  required
-                  value={selectedAssetId}
-                  onChange={(e) => setSelectedAssetId(Number(e.target.value))}
-                  className="w-full bg-surface border border-border rounded-md px-12 py-8 text-xs text-text-primary font-sans focus:outline-none focus:border-accent"
-                >
+            <form onSubmit={handleCreateRequest} className="flex flex-col gap-4 p-6">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold block" style={{ color: 'var(--color-text-secondary)' }}>Select Asset</label>
+                <select required value={selectedAssetId} onChange={(e) => setSelectedAssetId(Number(e.target.value))} className="h-9 px-3 rounded-md border text-sm focus:outline-none" style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text-primary)' }}>
                   <option value="">-- Choose Asset --</option>
-                  {assets.map((a) => (
-                    <option key={a.id} value={a.id}>
-                      {a.name} ({a.assetTag}) - Status: {a.status}
-                    </option>
-                  ))}
+                  {assets.map((a) => <option key={a.id} value={a.id}>{a.name} ({a.assetTag}) - Status: {a.status}</option>)}
                 </select>
               </div>
 
-              {/* Priority Select */}
-              <div className="space-y-6">
-                <label className="text-xs font-semibold text-text-secondary block">Priority level</label>
-                <select
-                  value={priority}
-                  onChange={(e) => setPriority(e.target.value as any)}
-                  className="w-full bg-surface border border-border rounded-md px-12 py-8 text-xs text-text-primary font-sans focus:outline-none focus:border-accent"
-                >
-                  <option value="Low">Low</option>
-                  <option value="Medium">Medium</option>
-                  <option value="High">High</option>
-                  <option value="Critical">Critical</option>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold block" style={{ color: 'var(--color-text-secondary)' }}>Priority level</label>
+                <select value={priority} onChange={(e) => setPriority(e.target.value as any)} className="h-9 px-3 rounded-md border text-sm focus:outline-none" style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text-primary)' }}>
+                  <option value="Low">Low</option><option value="Medium">Medium</option><option value="High">High</option><option value="Critical">Critical</option>
                 </select>
               </div>
 
-              {/* Issue Description */}
-              <div className="space-y-6">
-                <label className="text-xs font-semibold text-text-secondary block">Issue Description</label>
-                <textarea
-                  required
-                  rows={4}
-                  value={issueDescription}
-                  onChange={(e) => setIssueDescription(e.target.value)}
-                  placeholder="Describe the failure, physical damage, or technical malfunction..."
-                  className="w-full bg-surface border border-border rounded-md px-12 py-8 text-xs text-text-primary font-sans focus:outline-none focus:border-accent resize-none"
-                ></textarea>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold block" style={{ color: 'var(--color-text-secondary)' }}>Issue Description</label>
+                <textarea required rows={4} value={issueDescription} onChange={(e) => setIssueDescription(e.target.value)} placeholder="Describe the failure, physical damage, or technical malfunction..." className="px-3 py-2 rounded-md border text-sm focus:outline-none resize-none" style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text-primary)' }}></textarea>
               </div>
 
-              {/* Actions */}
-              <div className="flex justify-end gap-12 pt-8">
-                <button
-                  type="button"
-                  onClick={() => setIsNewRequestOpen(false)}
-                  className="px-16 py-8 border border-border hover:bg-neutral-subtle rounded-sm text-text-primary text-xs font-semibold transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitLoading}
-                  className="px-16 py-8 bg-accent hover:bg-accent-hover text-white rounded-sm text-xs font-semibold flex items-center gap-6 shadow-sm transition-colors disabled:opacity-50"
-                >
-                  {isSubmitLoading && <Loader2 className="w-14 h-14 animate-spin" />}
+              <div className="flex justify-end gap-2 pt-4 border-t mt-2" style={{ borderColor: 'var(--color-border)' }}>
+                <button type="button" onClick={() => setIsNewRequestOpen(false)} className="px-4 py-2 rounded-md border text-sm font-medium transition-colors" style={{ border: '1px solid var(--color-border)', color: 'var(--color-text-secondary)', background: 'var(--color-surface)' }}>Cancel</button>
+                <button type="submit" disabled={isSubmitLoading} className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold text-white transition-colors disabled:opacity-50" style={{ background: 'var(--color-accent)' }}>
+                  {isSubmitLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                   <span>Submit Request</span>
                 </button>
               </div>
@@ -534,53 +469,27 @@ export default function Maintenance() {
 
       {/* Modal: Assign Technician */}
       {assigningRequestId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-16">
-          <div 
-            className="fixed inset-0 bg-text-primary/40 backdrop-blur-xs"
-            onClick={() => setAssigningRequestId(null)}
-          ></div>
-
-          <div className="relative w-full max-w-sm bg-surface border border-border rounded shadow-xl overflow-hidden animate-fade-in">
-            <div className="px-24 py-16 border-b border-border flex justify-between items-center bg-[#F7F8FA]">
-              <h3 className="text-sm font-bold text-text-primary flex items-center gap-8">
-                <User className="w-16 h-16 text-accent" />
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 animate-fade-in" style={{ background: 'rgba(0,0,0,0.3)' }}>
+          <div className="w-full max-w-[400px] rounded-lg border shadow-[0_8px_24px_0_rgba(0,0,0,0.12)] animate-scale-up overflow-hidden" style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
+            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--color-border)', background: 'var(--color-surface-sunken)' }}>
+              <h3 className="text-base font-semibold flex items-center gap-2" style={{ color: 'var(--color-text-primary)' }}>
+                <User className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                 <span>Assign Technician</span>
               </h3>
-              <button
-                onClick={() => setAssigningRequestId(null)}
-                className="text-text-muted hover:text-text-primary text-xs font-semibold focus:outline-none"
-              >
-                Cancel
+              <button onClick={() => setAssigningRequestId(null)} className="text-sm font-semibold focus:outline-none" style={{ color: 'var(--color-text-muted)' }}>
+                ✕
               </button>
             </div>
 
-            <form onSubmit={handleAssignTechnician} className="p-24 space-y-16">
-              <div className="space-y-6">
-                <label className="text-xs font-semibold text-text-secondary block">Technician Name</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. John Doe"
-                  value={technicianName}
-                  onChange={(e) => setTechnicianName(e.target.value)}
-                  className="w-full bg-surface border border-border rounded-md px-12 py-8 text-xs text-text-primary font-sans focus:outline-none focus:border-accent"
-                />
+            <form onSubmit={handleAssignTechnician} className="flex flex-col gap-4 p-6">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold block" style={{ color: 'var(--color-text-secondary)' }}>Technician Name</label>
+                <input type="text" required placeholder="e.g. John Doe" value={technicianName} onChange={(e) => setTechnicianName(e.target.value)} className="h-9 px-3 rounded-md border text-sm focus:outline-none" style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text-primary)' }} />
               </div>
 
-              <div className="flex justify-end gap-12 pt-8">
-                <button
-                  type="button"
-                  onClick={() => setAssigningRequestId(null)}
-                  className="px-16 py-8 border border-border hover:bg-neutral-subtle rounded-sm text-text-primary text-xs font-semibold transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-16 py-8 bg-accent hover:bg-accent-hover text-white rounded-sm text-xs font-semibold transition-colors"
-                >
-                  Confirm Assignment
-                </button>
+              <div className="flex justify-end gap-2 pt-4 border-t mt-2" style={{ borderColor: 'var(--color-border)' }}>
+                <button type="button" onClick={() => setAssigningRequestId(null)} className="px-4 py-2 rounded-md border text-sm font-medium transition-colors" style={{ border: '1px solid var(--color-border)', color: 'var(--color-text-secondary)', background: 'var(--color-surface)' }}>Cancel</button>
+                <button type="submit" className="px-4 py-2 rounded-md text-sm font-semibold text-white transition-colors" style={{ background: 'var(--color-accent)' }}>Confirm Assignment</button>
               </div>
             </form>
           </div>
