@@ -21,11 +21,17 @@ export default {
         
         // Status colors
         success: 'var(--color-success)',
+        'success-subtle': 'var(--color-success-subtle)',
         info: 'var(--color-info)',
+        'info-subtle': 'var(--color-info-subtle)',
         warning: 'var(--color-warning)',
+        'warning-subtle': 'var(--color-warning-subtle)',
         alert: 'var(--color-alert)',
+        'alert-subtle': 'var(--color-alert-subtle)',
         danger: 'var(--color-danger)',
+        'danger-subtle': 'var(--color-danger-subtle)',
         'neutral-status': 'var(--color-neutral-status)',
+        'neutral-subtle': 'var(--color-neutral-subtle)',
       },
       fontFamily: {
         sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],

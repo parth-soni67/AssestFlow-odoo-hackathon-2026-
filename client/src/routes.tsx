@@ -29,6 +29,8 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 import OrganizationSetup from './modules/org-setup/OrganizationSetup';
 import AssetDirectory from './modules/assets/AssetDirectory';
 import AssetDetail from './modules/assets/AssetDetail';
+import ActivityLogs from './modules/activity-logs/ActivityLogs';
+import Reports from './modules/reports/Reports';
 
 // Protected Admin Route Guard
 function AdminRoute({ children }: { children: React.ReactNode }) {
@@ -97,6 +99,10 @@ export const router = createBrowserRouter([
         element: <BookingsCalendar />,
       },
       {
+        path: 'activity-log',
+        element: <ActivityLogs />,
+      },
+      {
         path: 'maintenance',
         element: <TempPlaceholder title="Maintenance Management" />,
       },
@@ -114,7 +120,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'reports',
-        element: <TempPlaceholder title="Reports & Analytics" />,
+        element: <Reports />,
       },
     ],
   },

@@ -13,6 +13,10 @@ import transferRouter from './modules/transfers/routes';
 import bookingRouter from './modules/bookings/routes';
 import maintenanceRouter from './modules/maintenance/routes';
 import auditRouter from './modules/audits/routes';
+import dashboardRouter from './modules/dashboard/routes';
+import notificationRouter from './modules/notifications/routes';
+import activityLogRouter from './modules/activity-logs/routes';
+import reportsRouter from './modules/reports/routes';
 
 const app = express();
 
@@ -30,6 +34,10 @@ app.use('/api/v1/transfers', transferRouter);
 app.use('/api/v1/bookings', bookingRouter);
 app.use('/api/v1/maintenance', maintenanceRouter);
 app.use('/api/v1/audits', auditRouter);
+app.use('/api/v1/dashboard', dashboardRouter);
+app.use('/api/v1/notifications', notificationRouter);
+app.use('/api/v1/activity-logs', activityLogRouter);
+app.use('/api/v1/reports', reportsRouter);
 
 // Health check endpoint
 app.get('/api/health', (req: Request, res: Response) => {

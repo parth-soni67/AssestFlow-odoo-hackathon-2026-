@@ -5,7 +5,8 @@ import * as service from './service';
 export const createAllocation = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const dto = createAllocationSchema.parse(req.body);
-    const result = await service.allocateAsset(dto);
+    const userId = (req as any).user.userId;
+    const result = await service.allocateAsset(dto, userId);
     res.status(201).json(result);
   } catch (err) {
     next(err);
@@ -16,7 +17,8 @@ export const returnAllocation = async (req: Request, res: Response, next: NextFu
   try {
     const id = parseInt(req.params.id, 10);
     const dto = returnAllocationSchema.parse(req.body);
-    const result = await service.returnAsset(id, dto);
+    const userId = (req as any).user.userId;
+    const result = await service.returnAsset(id, dto, userId);
     res.status(200).json(result);
   } catch (err) {
     next(err);
@@ -25,7 +27,8 @@ export const returnAllocation = async (req: Request, res: Response, next: NextFu
 
 export const triggerOverdueCheck = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await service.flagOverdueAllocations();
+    const userId = (req as any).user.userId;
+    const result = await service.flagOverdueAllocations(userId);
     res.status(200).json(result);
   } catch (err) {
     next(err);

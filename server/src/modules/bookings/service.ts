@@ -2,6 +2,7 @@ import { prisma } from '../../lib/prisma';
 import { AppError } from '../../middleware/errorHandler';
 import { CreateBookingDto, ListBookingsDto, RescheduleBookingDto } from './validation';
 import { BookingStatus } from '@prisma/client';
+import { logActivityAndNotify } from '../../lib/activityLogger';
 
 export const createBooking = async (dto: CreateBookingDto, bookedById: number) => {
   return await prisma.$transaction(async (tx) => {
@@ -19,7 +20,6 @@ export const createBooking = async (dto: CreateBookingDto, bookedById: number) =
     }
 
     // 2. Overlap validation
-    // S1 < E2 AND S2 < E1
     const conflict = await tx.booking.findFirst({
       where: {
         resourceAssetId: dto.resourceAssetId,
@@ -44,7 +44,7 @@ export const createBooking = async (dto: CreateBookingDto, bookedById: number) =
     }
 
     // 3. Create the booking
-    return await tx.booking.create({
+    const booking = await tx.booking.create({
       data: {
         asset: { connect: { id: dto.resourceAssetId } },
         bookedBy: { connect: { id: bookedById } },
@@ -57,6 +57,24 @@ export const createBooking = async (dto: CreateBookingDto, bookedById: number) =
         bookedBy: { select: { id: true, name: true, email: true } }
       }
     });
+
+    // 4. Log activity & notify
+    await logActivityAndNotify(tx, {
+      userId: bookedById,
+      action: 'BOOKING_CREATE',
+      entityType: 'Booking',
+      entityId: booking.id,
+      details: { resourceAssetId: dto.resourceAssetId, startTime: dto.startTime, endTime: dto.endTime },
+      notifications: [
+        {
+          userId: bookedById,
+          type: 'BOOKING_CONFIRMED',
+          message: `Your booking for resource "${booking.asset.name}" has been confirmed.`
+        }
+      ]
+    });
+
+    return booking;
   });
 };
 
@@ -110,7 +128,7 @@ export const cancelBooking = async (id: number, userId: number, role: string) =>
       throw new AppError(400, 'BOOKING_ALREADY_COMPLETED', 'Cannot cancel a completed booking.');
     }
 
-    return await tx.booking.update({
+    const updatedBooking = await tx.booking.update({
       where: { id },
       data: { status: BookingStatus.Cancelled },
       include: {
@@ -118,6 +136,24 @@ export const cancelBooking = async (id: number, userId: number, role: string) =>
         bookedBy: { select: { id: true, name: true, email: true } }
       }
     });
+
+    // Log & notify
+    await logActivityAndNotify(tx, {
+      userId: userId,
+      action: 'BOOKING_CANCEL',
+      entityType: 'Booking',
+      entityId: updatedBooking.id,
+      details: { resourceAssetId: updatedBooking.resourceAssetId },
+      notifications: [
+        {
+          userId: updatedBooking.bookedById,
+          type: 'BOOKING_CANCELLED',
+          message: `Your booking for resource "${updatedBooking.asset.name}" has been cancelled.`
+        }
+      ]
+    });
+
+    return updatedBooking;
   });
 };
 
@@ -168,7 +204,7 @@ export const rescheduleBooking = async (id: number, dto: RescheduleBookingDto, u
       });
     }
 
-    return await tx.booking.update({
+    const updatedBooking = await tx.booking.update({
       where: { id },
       data: {
         startTime: dto.startTime,
@@ -179,6 +215,24 @@ export const rescheduleBooking = async (id: number, dto: RescheduleBookingDto, u
         bookedBy: { select: { id: true, name: true, email: true } }
       }
     });
+
+    // Log & notify
+    await logActivityAndNotify(tx, {
+      userId: userId,
+      action: 'BOOKING_RESCHEDULE',
+      entityType: 'Booking',
+      entityId: updatedBooking.id,
+      details: { resourceAssetId: updatedBooking.resourceAssetId, startTime: dto.startTime, endTime: dto.endTime },
+      notifications: [
+        {
+          userId: updatedBooking.bookedById,
+          type: 'BOOKING_RESCHEDULED',
+          message: `Your booking for resource "${updatedBooking.asset.name}" has been rescheduled.`
+        }
+      ]
+    });
+
+    return updatedBooking;
   });
 };
 
@@ -205,7 +259,6 @@ export const sendBookingReminders = async () => {
   for (const booking of upcomingBookings) {
     const reminderMessage = `Reminder: Your reservation for "${booking.asset.name}" starts soon at ${new Date(booking.startTime).toLocaleTimeString()}. (Booking ID: ${booking.id})`;
 
-    // Check if notification already exists
     const existingNotification = await prisma.notification.findFirst({
       where: {
         userId: booking.bookedById,

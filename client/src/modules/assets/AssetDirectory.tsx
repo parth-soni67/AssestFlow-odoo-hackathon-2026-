@@ -152,12 +152,13 @@ export default function AssetDirectory() {
 
   const getStatusColor = (status: Asset['status']) => {
     switch (status) {
-      case 'Available': return 'bg-[#E6F6EE] text-[#1E8E5A] border-[#1E8E5A]/25';
-      case 'Allocated': return 'bg-[#EBF3FC] text-[#2F5DE0] border-[#2F5DE0]/25';
-      case 'Reserved': return 'bg-[#FFF9E6] text-[#B78103] border-[#B78103]/25';
-      case 'UnderMaintenance': return 'bg-[#F2F4F7] text-[#5B6270] border-[#5B6270]/25';
-      case 'Lost': return 'bg-[#FBEAE9] text-[#C1352E] border-[#C1352E]/25';
-      default: return 'bg-[#FBEAE9] text-[#C1352E] border-[#C1352E]/25';
+      case 'Available': return 'bg-success-subtle text-success border-success/25';
+      case 'Allocated': return 'bg-info-subtle text-info border-info/25';
+      case 'Reserved': return 'bg-warning-subtle text-warning border-warning/25';
+      case 'UnderMaintenance': return 'bg-alert-subtle text-alert border-alert/25';
+      case 'Lost': return 'bg-danger-subtle text-danger border-danger/25';
+      case 'Retired': return 'bg-neutral-subtle text-neutral-status border-border';
+      default: return 'bg-neutral-subtle text-neutral-status border-border';
     }
   };
 

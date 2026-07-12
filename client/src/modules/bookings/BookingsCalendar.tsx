@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../lib/AuthContext';
+import { Calendar, Clock } from 'lucide-react';
 
 interface Asset {
   id: number;
@@ -157,7 +158,6 @@ export default function BookingsCalendar() {
   };
 
   const startRescheduling = (booking: Booking) => {
-    // Format ISO string to match datetime-local inputs (YYYY-MM-DDTHH:MM)
     const startLocal = new Date(booking.startTime).toISOString().slice(0, 16);
     const endLocal = new Date(booking.endTime).toISOString().slice(0, 16);
     
@@ -218,23 +218,35 @@ export default function BookingsCalendar() {
     });
   };
 
+  const getStatusBadgeClass = (status: string) => {
+    switch (status) {
+      case 'Available': return 'bg-success-subtle text-success border-success/25';
+      case 'Allocated': return 'bg-info-subtle text-info border-info/25';
+      case 'Reserved': return 'bg-warning-subtle text-warning border-warning/25';
+      case 'UnderMaintenance': return 'bg-alert-subtle text-alert border-alert/25';
+      case 'Lost': return 'bg-danger-subtle text-danger border-danger/25';
+      default: return 'bg-neutral-subtle text-neutral-status border-border';
+    }
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-24 font-sans text-text-primary">
+      {/* Page Title */}
       <div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Resource Bookings Portal</h1>
-        <p className="text-slate-500 mt-1">Reserve shared hardware, meeting rooms, or lab resources without scheduling overlaps.</p>
+        <h1 className="text-xl font-bold tracking-tight">Resource Bookings Portal</h1>
+        <p className="text-sm text-text-secondary">Reserve shared hardware, meeting rooms, or lab resources without scheduling overlaps.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-24">
         {/* Left Column: Resources List */}
-        <div className="lg:col-span-1 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-          <div className="p-4 border-b border-slate-100 bg-slate-50/50">
-            <h2 className="font-semibold text-slate-800">Bookable Resources</h2>
-            <p className="text-xs text-slate-400 mt-0.5">{assets.length} items available</p>
+        <div className="lg:col-span-1 bg-surface rounded border border-border overflow-hidden flex flex-col">
+          <div className="p-16 border-b border-border bg-surface-sunken">
+            <h2 className="text-sm font-bold text-text-primary">Bookable Resources</h2>
+            <p className="text-xs text-text-muted mt-4">{assets.length} items available</p>
           </div>
-          <div className="divide-y divide-slate-100 overflow-y-auto max-h-[600px]">
+          <div className="divide-y divide-border overflow-y-auto max-h-[600px] bg-surface">
             {assets.length === 0 ? (
-              <div className="p-6 text-center text-sm text-slate-400">
+              <div className="p-24 text-center text-xs text-text-muted">
                 No bookable assets found.
               </div>
             ) : (
@@ -242,22 +254,22 @@ export default function BookingsCalendar() {
                 <button
                   key={asset.id}
                   onClick={() => setSelectedAsset(asset)}
-                  className={`w-full text-left p-4 hover:bg-slate-50 transition-colors flex flex-col gap-1.5 ${
-                    selectedAsset?.id === asset.id ? 'bg-indigo-50/50 border-l-4 border-indigo-600 pl-3' : ''
+                  className={`w-full text-left p-16 hover:bg-surface-sunken transition-all flex flex-col gap-8 border-l-4 ${
+                    selectedAsset?.id === asset.id 
+                      ? 'bg-accent-subtle border-accent pl-12' 
+                      : 'border-transparent'
                   }`}
                 >
                   <div className="flex justify-between items-start w-full">
-                    <span className="font-semibold text-sm text-slate-800 line-clamp-1">{asset.name}</span>
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">
+                    <span className="font-semibold text-xs text-text-primary line-clamp-1">{asset.name}</span>
+                    <span className="text-[10px] font-mono px-8 py-2 bg-surface border border-border text-text-secondary rounded">
                       {asset.assetTag}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-500">
+                  <div className="flex items-center gap-8 text-xs text-text-secondary">
                     <span>📍 {asset.location}</span>
                     <span>•</span>
-                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
-                      asset.status === 'Available' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'
-                    }`}>
+                    <span className={`px-8 py-2 rounded-badge text-[10px] font-bold border ${getStatusBadgeClass(asset.status)}`}>
                       {asset.status}
                     </span>
                   </div>
@@ -268,60 +280,56 @@ export default function BookingsCalendar() {
         </div>
 
         {/* Right Column: Schedule & Booking Tool */}
-        <div className="lg:col-span-3 flex flex-col gap-6">
+        <div className="lg:col-span-3 flex flex-col gap-24">
           {!selectedAsset ? (
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center flex flex-col items-center justify-center min-h-[400px]">
-              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 text-2xl mb-4">
-                📅
-              </div>
-              <h3 className="font-semibold text-slate-700 text-lg">No Resource Selected</h3>
-              <p className="text-slate-400 text-sm max-w-sm mt-1">
+            <div className="bg-surface rounded border border-border p-48 text-center flex flex-col items-center justify-center min-h-[400px]">
+              <Calendar className="w-32 h-32 text-text-muted mb-16" />
+              <h3 className="font-bold text-text-primary text-sm">No Resource Selected</h3>
+              <p className="text-text-secondary text-xs max-w-sm mt-4">
                 Please select a bookable shared resource from the sidebar directory to view its calendar schedule and reserve slot bookings.
               </p>
             </div>
           ) : (
             <>
               {/* Asset Header Info */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="bg-surface rounded border border-border p-24 flex flex-col md:flex-row justify-between items-start md:items-center gap-16">
                 <div>
-                  <div className="flex items-center gap-3">
-                    <h2 className="text-xl font-bold text-slate-900">{selectedAsset.name}</h2>
-                    <span className="text-xs font-mono px-2 py-0.5 bg-slate-100 text-slate-500 rounded border border-slate-200">
+                  <div className="flex items-center gap-12">
+                    <h2 className="text-lg font-bold text-text-primary">{selectedAsset.name}</h2>
+                    <span className="text-xs font-mono px-8 py-2 bg-surface-sunken text-text-secondary rounded border border-border">
                       {selectedAsset.assetTag}
                     </span>
                   </div>
-                  <p className="text-sm text-slate-500 mt-1">
+                  <p className="text-xs text-text-secondary mt-8">
                     📍 Location: {selectedAsset.location} | Condition: {selectedAsset.condition}
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
-                    selectedAsset.status === 'Available' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                  }`}>
+                <div>
+                  <span className={`px-12 py-4 rounded-badge text-xs font-semibold border ${getStatusBadgeClass(selectedAsset.status)}`}>
                     {selectedAsset.status}
                   </span>
                 </div>
               </div>
 
               {/* Booking Slot Form Card */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                <h3 className="font-bold text-slate-800 border-b border-slate-100 pb-3 mb-4">Reserve Booking Slot</h3>
+              <div className="bg-surface rounded border border-border p-24">
+                <h3 className="font-bold text-text-primary border-b border-border pb-12 mb-16 text-sm">Reserve Booking Slot</h3>
                 
                 {error && !editingBookingId && (
-                  <div className="mb-4 p-3 bg-rose-50 border border-rose-200 rounded-lg text-sm text-rose-700">
+                  <div className="mb-16 p-12 bg-danger-subtle border border-danger/25 rounded text-xs text-danger">
                     ⚠️ {error}
                   </div>
                 )}
 
                 {success && (
-                  <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-emerald-700">
+                  <div className="mb-16 p-12 bg-success-subtle border border-success/25 rounded text-xs text-success">
                     ✅ {success}
                   </div>
                 )}
 
-                <form onSubmit={handleBook} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                <form onSubmit={handleBook} className="grid grid-cols-1 md:grid-cols-3 gap-16 items-end">
+                  <div className="space-y-8">
+                    <label className="block text-[10px] font-bold text-text-secondary uppercase tracking-wider">
                       Start Date & Time
                     </label>
                     <input
@@ -329,11 +337,11 @@ export default function BookingsCalendar() {
                       required
                       value={startTime}
                       onChange={(e) => setStartTime(e.target.value)}
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full h-32 rounded border border-border px-12 text-xs text-text-primary focus:outline-none"
                     />
                   </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                  <div className="space-y-8">
+                    <label className="block text-[10px] font-bold text-text-secondary uppercase tracking-wider">
                       End Date & Time
                     </label>
                     <input
@@ -341,14 +349,14 @@ export default function BookingsCalendar() {
                       required
                       value={endTime}
                       onChange={(e) => setEndTime(e.target.value)}
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full h-32 rounded border border-border px-12 text-xs text-text-primary focus:outline-none"
                     />
                   </div>
                   <div>
                     <button
                       type="submit"
                       disabled={loading || !startTime || !endTime}
-                      className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white rounded-lg font-semibold text-sm transition-colors shadow-sm"
+                      className="w-full h-32 bg-accent hover:bg-accent-hover disabled:opacity-50 text-white rounded font-semibold text-xs transition-colors shadow-sm focus:outline-none"
                     >
                       {loading ? 'Validating Slot...' : 'Confirm Reservation'}
                     </button>
@@ -357,15 +365,15 @@ export default function BookingsCalendar() {
               </div>
 
               {/* Timeline list of upcoming bookings */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                <h3 className="font-bold text-slate-800 border-b border-slate-100 pb-3 mb-4">Upcoming Schedule</h3>
+              <div className="bg-surface rounded border border-border p-24">
+                <h3 className="font-bold text-text-primary border-b border-border pb-12 mb-16 text-sm">Upcoming Schedule</h3>
                 
                 {bookings.length === 0 ? (
-                  <div className="p-8 text-center text-slate-400 text-sm">
+                  <div className="p-32 text-center text-text-muted text-xs">
                     No active or upcoming reservations found for this resource. Be the first to book!
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-12">
                     {bookings.map((booking) => {
                       const isOwner = booking.bookedBy.id === currentUser?.id;
                       const isManager = currentUser?.role === 'Admin' || currentUser?.role === 'AssetManager';
@@ -375,22 +383,22 @@ export default function BookingsCalendar() {
                       return (
                         <div
                           key={booking.id}
-                          className={`p-4 rounded-xl border transition-all ${
-                            booking.status === 'Cancelled' ? 'bg-slate-50/50 border-slate-100 opacity-60' : 'bg-slate-50 border-slate-100'
+                          className={`p-16 rounded border transition-all ${
+                            booking.status === 'Cancelled' ? 'bg-surface border-border/40 opacity-50' : 'bg-surface-sunken border-border'
                           }`}
                         >
                           {editingBookingId === booking.id ? (
                             /* Rescheduling Form Interface */
-                            <div className="space-y-4">
-                              <h4 className="font-semibold text-sm text-indigo-700">Reschedule Booking Slot</h4>
+                            <div className="space-y-16">
+                              <h4 className="font-semibold text-xs text-accent">Reschedule Booking Slot</h4>
                               {error && (
-                                <div className="p-2.5 bg-rose-50 border border-rose-200 rounded text-xs text-rose-700">
+                                <div className="p-12 bg-danger-subtle border border-danger/25 rounded text-xs text-danger">
                                   ⚠️ {error}
                                 </div>
                               )}
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+                                <div className="space-y-8">
+                                  <label className="block text-[10px] font-bold text-text-secondary uppercase tracking-wider">
                                     New Start Date & Time
                                   </label>
                                   <input
@@ -398,11 +406,11 @@ export default function BookingsCalendar() {
                                     required
                                     value={rescheduleStart}
                                     onChange={(e) => setRescheduleStart(e.target.value)}
-                                    className="w-full rounded border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                    className="w-full rounded border border-border px-12 py-8 text-xs focus:outline-none"
                                   />
                                 </div>
-                                <div>
-                                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                                <div className="space-y-8">
+                                  <label className="block text-[10px] font-bold text-text-secondary uppercase tracking-wider">
                                     New End Date & Time
                                   </label>
                                   <input
@@ -410,15 +418,15 @@ export default function BookingsCalendar() {
                                     required
                                     value={rescheduleEnd}
                                     onChange={(e) => setRescheduleEnd(e.target.value)}
-                                    className="w-full rounded border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                    className="w-full rounded border border-border px-12 py-8 text-xs focus:outline-none"
                                   />
                                 </div>
                               </div>
-                              <div className="flex gap-2 justify-end">
+                              <div className="flex gap-8 justify-end">
                                 <button
                                   type="button"
                                   onClick={() => setEditingBookingId(null)}
-                                  className="px-3 py-1.5 bg-slate-200 text-slate-700 rounded text-xs font-semibold hover:bg-slate-300"
+                                  className="px-12 py-8 bg-surface border border-border text-text-secondary rounded text-xs font-semibold hover:bg-surface-sunken"
                                 >
                                   Cancel
                                 </button>
@@ -426,7 +434,7 @@ export default function BookingsCalendar() {
                                   type="button"
                                   disabled={loading}
                                   onClick={() => handleReschedule(booking.id)}
-                                  className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-xs font-semibold"
+                                  className="px-12 py-8 bg-accent hover:bg-accent-hover text-white rounded text-xs font-semibold"
                                 >
                                   {loading ? 'Rescheduling...' : 'Save Reschedule'}
                                 </button>
@@ -434,24 +442,24 @@ export default function BookingsCalendar() {
                             </div>
                           ) : (
                             /* Normal View Interface */
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                              <div className="flex items-center gap-3.5">
-                                <div className="text-xl">📅</div>
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-12">
+                              <div className="flex items-center gap-12">
+                                <Clock className="w-20 h-20 text-text-muted" />
                                 <div>
-                                  <p className="font-semibold text-sm text-slate-800">
+                                  <p className="font-semibold text-xs text-text-primary">
                                     {formatDateTime(booking.startTime)} - {formatDateTime(booking.endTime)}
                                   </p>
-                                  <p className="text-xs text-slate-400 mt-0.5">
+                                  <p className="text-xs text-text-muted mt-4">
                                     Reserved by: {booking.bookedBy.name} ({booking.bookedBy.email})
                                   </p>
                                 </div>
                               </div>
                               
-                              <div className="flex items-center gap-3 justify-end">
-                                <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                                  booking.status === 'Upcoming' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
-                                  booking.status === 'Cancelled' ? 'bg-slate-100 text-slate-500 border border-slate-200' :
-                                  'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                              <div className="flex items-center gap-12 justify-end">
+                                <span className={`px-8 py-2 rounded-badge text-[10px] font-semibold border ${
+                                  booking.status === 'Upcoming' ? 'bg-info-subtle text-info border-info/20' :
+                                  booking.status === 'Cancelled' ? 'bg-neutral-subtle text-neutral-status border border-border' :
+                                  'bg-accent-subtle text-accent border border-accent/20'
                                 }`}>
                                   {booking.status}
                                 </span>
@@ -459,7 +467,7 @@ export default function BookingsCalendar() {
                                 {canReschedule && (
                                   <button
                                     onClick={() => startRescheduling(booking)}
-                                    className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded text-xs font-medium transition-colors"
+                                    className="px-12 py-6 bg-surface hover:bg-surface-sunken text-text-secondary rounded border border-border text-xs font-medium transition-colors"
                                   >
                                     Reschedule
                                   </button>
@@ -468,7 +476,7 @@ export default function BookingsCalendar() {
                                 {canCancel && (
                                   <button
                                     onClick={() => handleCancel(booking.id)}
-                                    className="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded text-xs font-medium transition-colors"
+                                    className="px-12 py-6 bg-danger-subtle hover:bg-danger/10 text-danger rounded border border-danger/25 text-xs font-medium transition-colors"
                                   >
                                     Cancel
                                   </button>

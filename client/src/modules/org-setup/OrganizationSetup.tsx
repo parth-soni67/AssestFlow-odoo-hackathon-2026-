@@ -391,8 +391,8 @@ export default function OrganizationSetup() {
                           onClick={() => handleToggleDeptStatus(dept)}
                           className={`inline-block text-[11px] px-8 py-4 font-bold rounded-full select-none transition-colors border ${
                             dept.status === 'Active'
-                              ? 'bg-[#E6F6EE] text-[#1E8E5A] border-[#1E8E5A]/35 hover:bg-[#1E8E5A]/10'
-                              : 'bg-[#FBEAE9] text-[#C1352E] border-[#C1352E]/35 hover:bg-[#C1352E]/10'
+                              ? 'bg-success-subtle text-success border-success/35 hover:bg-success/10'
+                              : 'bg-danger-subtle text-danger border-danger/35 hover:bg-danger/10'
                           }`}
                         >
                           {dept.status}
@@ -578,8 +578,8 @@ export default function OrganizationSetup() {
                         <td className="p-16 text-center">
                           <span className={`inline-block text-[10px] px-8 py-2 font-bold rounded-full border ${
                             emp.status === 'Active'
-                              ? 'bg-[#E6F6EE] text-[#1E8E5A] border-[#1E8E5A]/25'
-                              : 'bg-[#FBEAE9] text-[#C1352E] border-[#C1352E]/25'
+                              ? 'bg-success-subtle text-success border-success/25'
+                              : 'bg-danger-subtle text-danger border-danger/25'
                           }`}>
                             {emp.status}
                           </span>

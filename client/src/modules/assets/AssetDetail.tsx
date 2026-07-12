@@ -78,20 +78,26 @@ export default function AssetDetail() {
 
   const getStatusColor = (status: Asset['status']) => {
     switch (status) {
-      case 'Available': return 'bg-[#E6F6EE] text-[#1E8E5A] border-[#1E8E5A]/25';
-      case 'Allocated': return 'bg-[#EBF3FC] text-[#2F5DE0] border-[#2F5DE0]/25';
-      case 'Reserved': return 'bg-[#FFF9E6] text-[#B78103] border-[#B78103]/25';
-      case 'UnderMaintenance': return 'bg-[#F2F4F7] text-[#5B6270] border-[#5B6270]/25';
-      case 'Lost': return 'bg-[#FBEAE9] text-[#C1352E] border-[#C1352E]/25';
-      default: return 'bg-[#FBEAE9] text-[#C1352E] border-[#C1352E]/25';
+      case 'Available': return 'bg-success-subtle text-success border-success/25';
+      case 'Allocated': return 'bg-info-subtle text-info border-info/25';
+      case 'Reserved': return 'bg-warning-subtle text-warning border-warning/25';
+      case 'UnderMaintenance': return 'bg-alert-subtle text-alert border-alert/25';
+      case 'Lost': return 'bg-danger-subtle text-danger border-danger/25';
+      case 'Retired': return 'bg-neutral-subtle text-neutral-status border-border';
+      default: return 'bg-neutral-subtle text-neutral-status border-border';
     }
   };
 
   const getPriorityColor = (priority: MaintenanceRequest['priority']) => {
     switch (priority) {
-      case 'High': return 'bg-[#FBEAE9] text-[#C1352E] border-[#C1352E]/25';
-      case 'Medium': return 'bg-[#FFF9E6] text-[#B78103] border-[#B78103]/25';
-      default: return 'bg-[#F2F4F7] text-[#5B6270] border-[#5B6270]/25';
+      case 'Critical':
+      case 'High': 
+        return 'bg-danger-subtle text-danger border-danger/25';
+      case 'Medium': 
+        return 'bg-warning-subtle text-warning border-warning/25';
+      case 'Low':
+      default: 
+        return 'bg-success-subtle text-success border-success/25';
     }
   };
 
@@ -302,9 +308,9 @@ export default function AssetDetail() {
                         </td>
                         <td className="p-16 text-right">
                           <span className={`inline-block text-[10px] px-8 py-2 font-bold rounded-full border ${
-                            alloc.status === 'Active' ? 'bg-[#EBF3FC] text-[#2F5DE0] border-[#2F5DE0]/25' :
-                            alloc.status === 'Returned' ? 'bg-[#E6F6EE] text-[#1E8E5A] border-[#1E8E5A]/25' :
-                            'bg-[#FBEAE9] text-[#C1352E] border-[#C1352E]/25'
+                            alloc.status === 'Active' ? 'bg-info-subtle text-info border-info/25' :
+                            alloc.status === 'Returned' ? 'bg-success-subtle text-success border-success/25' :
+                            'bg-danger-subtle text-danger border-danger/25'
                           }`}>
                             {alloc.status}
                           </span>
@@ -357,10 +363,10 @@ export default function AssetDetail() {
                         </td>
                         <td className="p-16 text-right">
                           <span className={`inline-block text-[10px] px-8 py-2 font-bold rounded-full border ${
-                            req.status === 'Resolved' ? 'bg-[#E6F6EE] text-[#1E8E5A] border-[#1E8E5A]/25' :
-                            req.status === 'Approved' || req.status === 'TechnicianAssigned' || req.status === 'InProgress' ? 'bg-[#EBF3FC] text-[#2F5DE0] border-[#2F5DE0]/25' :
-                            req.status === 'Pending' ? 'bg-[#FFF9E6] text-[#B78103] border-[#B78103]/25' :
-                            'bg-[#FBEAE9] text-[#C1352E] border-[#C1352E]/25'
+                            req.status === 'Resolved' ? 'bg-success-subtle text-success border-success/25' :
+                            req.status === 'Approved' || req.status === 'TechnicianAssigned' || req.status === 'InProgress' ? 'bg-info-subtle text-info border-info/25' :
+                            req.status === 'Pending' ? 'bg-warning-subtle text-warning border-warning/25' :
+                            'bg-danger-subtle text-danger border-danger/25'
                           }`}>
                             {req.status}
                           </span>

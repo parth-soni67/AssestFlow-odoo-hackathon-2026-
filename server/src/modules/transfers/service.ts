@@ -2,6 +2,7 @@ import { prisma } from '../../lib/prisma';
 import { AppError } from '../../middleware/errorHandler';
 import { CreateTransferDto, UpdateTransferDto } from './validation';
 import { AssetStatus, TransferStatus, AllocationStatus } from '@prisma/client';
+import { logActivityAndNotify } from '../../lib/activityLogger';
 
 export const requestTransfer = async (dto: CreateTransferDto, requestedById: number) => {
   const asset = await prisma.asset.findUnique({
@@ -34,20 +35,39 @@ export const requestTransfer = async (dto: CreateTransferDto, requestedById: num
     throw new AppError(400, 'RECIPIENT_ALREADY_HOLDER', 'Recipient is already the current holder of this asset.');
   }
 
-  return await prisma.transferRequest.create({
-    data: {
-      asset: { connect: { id: dto.assetId } },
-      toHolder: { connect: { id: dto.toHolderId } },
-      requestedBy: { connect: { id: requestedById } },
-      fromHolder: asset.currentHolderId ? { connect: { id: asset.currentHolderId } } : undefined,
-      status: TransferStatus.Requested
-    },
-    include: {
-      asset: { select: { id: true, name: true, assetTag: true } },
-      fromHolder: { select: { id: true, name: true, email: true } },
-      toHolder: { select: { id: true, name: true, email: true } },
-      requestedBy: { select: { id: true, name: true, email: true } }
-    }
+  return await prisma.$transaction(async (tx) => {
+    const tr = await tx.transferRequest.create({
+      data: {
+        asset: { connect: { id: dto.assetId } },
+        toHolder: { connect: { id: dto.toHolderId } },
+        requestedBy: { connect: { id: requestedById } },
+        fromHolder: asset.currentHolderId ? { connect: { id: asset.currentHolderId } } : undefined,
+        status: TransferStatus.Requested
+      },
+      include: {
+        asset: { select: { id: true, name: true, assetTag: true } },
+        fromHolder: { select: { id: true, name: true, email: true } },
+        toHolder: { select: { id: true, name: true, email: true } },
+        requestedBy: { select: { id: true, name: true, email: true } }
+      }
+    });
+
+    await logActivityAndNotify(tx, {
+      userId: requestedById,
+      action: 'TRANSFER_REQUEST',
+      entityType: 'TransferRequest',
+      entityId: tr.id,
+      details: { assetId: dto.assetId, toHolderId: dto.toHolderId },
+      notifications: [
+        {
+          userId: dto.toHolderId,
+          type: 'TRANSFER_PENDING',
+          message: `A transfer request for Asset ${tr.asset.name} has been raised in your favor.`
+        }
+      ]
+    });
+
+    return tr;
   });
 };
 
@@ -65,16 +85,35 @@ export const processTransfer = async (id: number, dto: UpdateTransferDto, approv
   }
 
   if (dto.action === 'Reject') {
-    return await prisma.transferRequest.update({
-      where: { id },
-      data: {
-        status: TransferStatus.Rejected,
-        approvedBy: { connect: { id: approvedById } }
-      },
-      include: {
-        asset: { select: { id: true, name: true, assetTag: true } },
-        toHolder: { select: { id: true, name: true, email: true } }
-      }
+    return await prisma.$transaction(async (tx) => {
+      const tr = await tx.transferRequest.update({
+        where: { id },
+        data: {
+          status: TransferStatus.Rejected,
+          approvedBy: { connect: { id: approvedById } }
+        },
+        include: {
+          asset: { select: { id: true, name: true, assetTag: true } },
+          toHolder: { select: { id: true, name: true, email: true } }
+        }
+      });
+
+      await logActivityAndNotify(tx, {
+        userId: approvedById,
+        action: 'TRANSFER_REJECT',
+        entityType: 'TransferRequest',
+        entityId: tr.id,
+        details: { assetId: tr.assetId, toHolderId: tr.toHolderId },
+        notifications: [
+          {
+            userId: tr.toHolderId,
+            type: 'TRANSFER_REJECTED',
+            message: `The transfer request for Asset ${tr.asset.name} was rejected.`
+          }
+        ]
+      });
+
+      return tr;
     });
   }
 
@@ -100,7 +139,6 @@ export const processTransfer = async (id: number, dto: UpdateTransferDto, approv
     }
 
     // 2. Create new active allocation for the recipient
-    // Default expected return date to 30 days from now
     const expectedReturnDate = new Date(Date.now() + 86400000 * 30);
     await tx.allocation.create({
       data: {
@@ -122,7 +160,7 @@ export const processTransfer = async (id: number, dto: UpdateTransferDto, approv
     });
 
     // 4. Set transfer request status to Reallocated
-    return await tx.transferRequest.update({
+    const updatedTr = await tx.transferRequest.update({
       where: { id },
       data: {
         status: TransferStatus.Reallocated,
@@ -135,5 +173,37 @@ export const processTransfer = async (id: number, dto: UpdateTransferDto, approv
         approvedBy: { select: { id: true, name: true, email: true } }
       }
     });
+
+    // 5. Log activity & notify
+    const notifications = [
+      {
+        userId: transfer.toHolderId,
+        type: 'TRANSFER_APPROVED',
+        message: `The transfer request for Asset ${updatedTr.asset.name} has been approved.`
+      }
+    ];
+
+    if (transfer.fromHolderId) {
+      notifications.push({
+        userId: transfer.fromHolderId,
+        type: 'TRANSFER_COMPLETED',
+        message: `Asset ${updatedTr.asset.name} has been successfully transferred to ${updatedTr.toHolder.name}.`
+      });
+    }
+
+    await logActivityAndNotify(tx, {
+      userId: approvedById,
+      action: 'TRANSFER_APPROVE',
+      entityType: 'TransferRequest',
+      entityId: transfer.id,
+      details: {
+        assetId: transfer.assetId,
+        fromHolderId: transfer.fromHolderId,
+        toHolderId: transfer.toHolderId
+      },
+      notifications
+    });
+
+    return updatedTr;
   });
 };

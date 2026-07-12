@@ -18,11 +18,17 @@
 
   /* Status Colors */
   --color-success: #1E8E5A;
+  --color-success-subtle: #E6F6EE;
   --color-info: #2F5DE0;
+  --color-info-subtle: #EAF0FE;
   --color-warning: #B4740E;
+  --color-warning-subtle: #FBF0DD;
   --color-alert: #C24B1F;
+  --color-alert-subtle: #FCEAE1;
   --color-danger: #C1352E;
+  --color-danger-subtle: #FBEAE9;
   --color-neutral-status: #6B7280;
+  --color-neutral-subtle: #EEF0F3;
 }
 
 body {

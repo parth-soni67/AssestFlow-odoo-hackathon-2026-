@@ -2,8 +2,9 @@ import { prisma } from '../../lib/prisma';
 import { AppError } from '../../middleware/errorHandler';
 import { CreateAllocationDto, ReturnAllocationDto } from './validation';
 import { AssetStatus, AllocationStatus } from '@prisma/client';
+import { logActivityAndNotify } from '../../lib/activityLogger';
 
-export const allocateAsset = async (dto: CreateAllocationDto) => {
+export const allocateAsset = async (dto: CreateAllocationDto, executorId: number) => {
   return await prisma.$transaction(async (tx) => {
     // 1. Fetch asset with current assignee info
     const asset = await tx.asset.findUnique({
@@ -87,11 +88,35 @@ export const allocateAsset = async (dto: CreateAllocationDto) => {
       }
     });
 
+    // 7. Log activity & notify
+    const notifications = [];
+    if (dto.employeeId) {
+      notifications.push({
+        userId: dto.employeeId,
+        type: 'ALLOCATION_ASSIGNED',
+        message: `Asset ${asset.name} (${asset.assetTag}) has been allocated to you.`
+      });
+    }
+
+    await logActivityAndNotify(tx, {
+      userId: executorId,
+      action: 'ALLOCATION_CREATE',
+      entityType: 'Allocation',
+      entityId: allocation.id,
+      details: {
+        assetId: dto.assetId,
+        assetTag: asset.assetTag,
+        departmentId: dto.departmentId || null,
+        employeeId: dto.employeeId || null
+      },
+      notifications
+    });
+
     return { allocation, asset: updatedAsset };
   });
 };
 
-export const returnAsset = async (id: number, dto: ReturnAllocationDto) => {
+export const returnAsset = async (id: number, dto: ReturnAllocationDto, executorId: number) => {
   return await prisma.$transaction(async (tx) => {
     // 1. Fetch the target allocation
     const allocation = await tx.allocation.findUnique({
@@ -131,21 +156,84 @@ export const returnAsset = async (id: number, dto: ReturnAllocationDto) => {
       }
     });
 
+    // 4. Log activity & notify original assignee
+    const notifications = [];
+    if (allocation.employeeId) {
+      notifications.push({
+        userId: allocation.employeeId,
+        type: 'ALLOCATION_RETURNED',
+        message: `Asset ${updatedAsset.name} (${updatedAsset.assetTag}) return has been checked in.`
+      });
+    }
+
+    await logActivityAndNotify(tx, {
+      userId: executorId,
+      action: 'ALLOCATION_RETURN',
+      entityType: 'Allocation',
+      entityId: allocation.id,
+      details: {
+        assetId: allocation.assetId,
+        assetTag: updatedAsset.assetTag,
+        condition: dto.condition
+      },
+      notifications
+    });
+
     return { allocation: updatedAllocation, asset: updatedAsset };
   });
 };
 
-export const flagOverdueAllocations = async () => {
-  const result = await prisma.allocation.updateMany({
+export const flagOverdueAllocations = async (executorId?: number) => {
+  let finalExecutorId = executorId;
+  if (!finalExecutorId) {
+    const admin = await prisma.user.findFirst({ where: { role: 'Admin' } });
+    finalExecutorId = admin ? admin.id : 1;
+  }
+
+  // Find active allocations past expected return date
+  const overdueAllocations = await prisma.allocation.findMany({
     where: {
       status: AllocationStatus.Active,
       expectedReturnDate: {
         lt: new Date()
       }
     },
-    data: {
-      status: AllocationStatus.Overdue
+    include: {
+      asset: true,
+      employee: true
     }
   });
-  return { count: result.count };
+
+  let count = 0;
+  for (const alloc of overdueAllocations) {
+    await prisma.$transaction(async (tx) => {
+      // update allocation to Overdue
+      await tx.allocation.update({
+        where: { id: alloc.id },
+        data: { status: AllocationStatus.Overdue }
+      });
+
+      // log activity & notify holder
+      const notifs = [];
+      if (alloc.employeeId) {
+        notifs.push({
+          userId: alloc.employeeId,
+          type: 'OVERDUE_ALERT',
+          message: `Asset ${alloc.asset.name} (${alloc.asset.assetTag}) allocation is overdue. Please return it immediately.`
+        });
+      }
+
+      await logActivityAndNotify(tx, {
+        userId: finalExecutorId!,
+        action: 'ALLOCATION_OVERDUE',
+        entityType: 'Allocation',
+        entityId: alloc.id,
+        details: { assetId: alloc.assetId, assetTag: alloc.asset.assetTag },
+        notifications: notifs
+      });
+    });
+    count++;
+  }
+
+  return { count };
 };

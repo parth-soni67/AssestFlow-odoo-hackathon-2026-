@@ -38,7 +38,8 @@ export const rejectRequest = async (req: Request, res: Response, next: NextFunct
 export const resolveRequest = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(req.params.id, 10);
-    const result = await service.resolveRequest(id);
+    const userId = (req as any).user.userId;
+    const result = await service.resolveRequest(id, userId);
     res.status(200).json(result);
   } catch (err) {
     next(err);
@@ -49,7 +50,8 @@ export const assignTechnician = async (req: Request, res: Response, next: NextFu
   try {
     const id = parseInt(req.params.id, 10);
     const dto = assignTechnicianSchema.parse(req.body);
-    const result = await service.assignTechnician(id, dto);
+    const userId = (req as any).user.userId;
+    const result = await service.assignTechnician(id, dto, userId);
     res.status(200).json({ request: result });
   } catch (err) {
     next(err);
@@ -59,7 +61,8 @@ export const assignTechnician = async (req: Request, res: Response, next: NextFu
 export const startWork = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(req.params.id, 10);
-    const result = await service.startWork(id);
+    const userId = (req as any).user.userId;
+    const result = await service.startWork(id, userId);
     res.status(200).json({ request: result });
   } catch (err) {
     next(err);
