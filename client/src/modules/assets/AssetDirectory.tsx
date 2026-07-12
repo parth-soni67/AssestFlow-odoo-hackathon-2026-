@@ -163,161 +163,135 @@ export default function AssetDirectory() {
   };
 
   return (
-    <div className="space-y-24 font-sans text-text-primary animate-fade-in">
+    <div className="flex flex-col gap-5 font-sans animate-fade-in" style={{ color: 'var(--color-text-primary)' }}>
       {/* Alert Notices */}
       {error && (
-        <div className="p-16 border border-danger/15 bg-danger-subtle text-danger text-xs font-semibold rounded-sm">
+        <div className="px-4 py-3 border rounded text-xs font-semibold" style={{ borderColor: 'var(--color-danger)', background: 'var(--color-danger-subtle)', color: 'var(--color-danger)' }}>
           {error}
         </div>
       )}
       {success && (
-        <div className="p-16 border border-success/15 bg-success-subtle text-success text-xs font-semibold rounded-sm">
+        <div className="px-4 py-3 border rounded text-xs font-semibold" style={{ borderColor: 'var(--color-success)', background: 'var(--color-success-subtle)', color: 'var(--color-success)' }}>
           {success}
         </div>
       )}
 
       {/* Header section */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-16 border-b border-border pb-16">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b" style={{ borderColor: 'var(--color-border)' }}>
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-text-primary">Assets Directory</h1>
-          <p className="text-xs text-text-secondary">Manage, track, and filter all company assets and shared equipment.</p>
+          <h1 className="text-2xl font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>Assets Directory</h1>
+          <p className="text-sm mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>Manage, track, and filter all company assets and shared equipment.</p>
         </div>
 
         {isManagerOrAdmin && (
           <button
             onClick={() => setModalOpen(true)}
-            className="flex items-center justify-center gap-8 bg-accent hover:bg-accent-hover text-white text-xs font-semibold px-16 py-8 rounded-sm shadow-sm btn-premium"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold text-white transition-colors"
+            style={{ background: 'var(--color-accent)' }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-accent-hover)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'var(--color-accent)')}
           >
-            <Plus className="w-16 h-16" />
-            <span>Register Asset</span>
+            <Plus className="w-4 h-4" />
+            Register Asset
           </button>
         )}
       </div>
 
-      {/* Filter Controls */}
-      <div className="p-16 bg-[#F7F8FA] border border-border rounded flex flex-col md:flex-row gap-12 items-center">
-        <div className="w-full md:flex-1 relative">
-          <Search className="w-16 h-16 absolute left-12 top-10 text-text-muted" />
+      {/* Filter Controls — single compact row */}
+      <div className="flex flex-col md:flex-row gap-2 p-3 rounded-lg border" style={{ background: 'var(--color-surface-sunken)', borderColor: 'var(--color-border)' }}>
+        {/* Search */}
+        <div className="flex-1 relative">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--color-text-muted)' }} />
           <input
             type="text"
-            placeholder="Search by tag, name, serial, location..."
-            className="w-full h-36 pl-36 pr-12 border border-border rounded bg-surface text-xs text-text-primary focus:border-accent focus:ring-2 focus:ring-accent/10 focus:outline-none"
+            placeholder="Search by tag, name, serial, location…"
+            className="w-full h-9 pl-9 pr-3 rounded-md border text-sm focus:outline-none"
+            style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text-primary)' }}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
 
-        <div className="w-full md:w-auto flex flex-wrap gap-12">
-          <select
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-            className="h-36 px-8 border border-border rounded bg-surface text-xs text-text-secondary focus:outline-none focus:border-accent"
-          >
-            <option value="">All Categories</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
-
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="h-36 px-8 border border-border rounded bg-surface text-xs text-text-secondary focus:outline-none focus:border-accent"
-          >
-            <option value="">All Statuses</option>
-            <option value="Available">Available</option>
-            <option value="Allocated">Allocated</option>
-            <option value="Reserved">Reserved</option>
-            <option value="UnderMaintenance">Under Maintenance</option>
-            <option value="Lost">Lost</option>
-            <option value="Retired">Retired</option>
-            <option value="Disposed">Disposed</option>
-          </select>
-
-          <select
-            value={filterDept}
-            onChange={(e) => setFilterDept(e.target.value)}
-            className="h-36 px-8 border border-border rounded bg-surface text-xs text-text-secondary focus:outline-none focus:border-accent"
-          >
-            <option value="">All Departments</option>
-            {departments.map((d) => (
-              <option key={d.id} value={d.id}>{d.name}</option>
-            ))}
-          </select>
-
-          <select
-            value={filterBookable}
-            onChange={(e) => setFilterBookable(e.target.value)}
-            className="h-36 px-8 border border-border rounded bg-surface text-xs text-text-secondary focus:outline-none focus:border-accent"
-          >
-            <option value="">All Booking Rights</option>
-            <option value="true">Bookable Items</option>
-            <option value="false">Non-Bookable Items</option>
-          </select>
+        {/* Filter dropdowns */}
+        <div className="flex flex-wrap gap-2">
+          {([
+            { value: filterCategory, onChange: setFilterCategory, options: [['', 'All Categories'], ...categories.map(c => [String(c.id), c.name])] },
+            { value: filterStatus,   onChange: setFilterStatus,   options: [['', 'All Statuses'], ['Available','Available'], ['Allocated','Allocated'], ['Reserved','Reserved'], ['UnderMaintenance','Under Maintenance'], ['Lost','Lost'], ['Retired','Retired'], ['Disposed','Disposed']] },
+            { value: filterDept,     onChange: setFilterDept,     options: [['', 'All Departments'], ...departments.map(d => [String(d.id), d.name])] },
+            { value: filterBookable, onChange: setFilterBookable, options: [['', 'Booking: All'], ['true','Bookable'], ['false','Non-Bookable']] },
+          ] as Array<{ value: string; onChange: (v: string) => void; options: [string, string][] }>).map((f, i) => (
+            <select
+              key={i}
+              value={f.value}
+              onChange={e => f.onChange(e.target.value)}
+              className="h-9 px-3 rounded-md border text-sm focus:outline-none"
+              style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text-secondary)' }}
+            >
+              {f.options.map(([val, label]) => <option key={val} value={val}>{label}</option>)}
+            </select>
+          ))}
         </div>
       </div>
 
       {/* Asset Cards Grid */}
       {loading && assets.length === 0 ? (
-        <div className="text-center py-48 text-text-secondary text-xs">Loading directory...</div>
+        <div className="py-16 text-center text-sm" style={{ color: 'var(--color-text-secondary)' }}>Loading assets…</div>
       ) : assets.length === 0 ? (
-        <div className="bg-surface border border-border rounded p-48 text-center text-text-secondary text-xs">
-          No assets found matching the chosen search criteria.
+        <div className="py-16 text-center text-sm rounded-lg border" style={{ color: 'var(--color-text-secondary)', borderColor: 'var(--color-border)', background: 'var(--color-surface)' }}>
+          No assets match your filters.
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-24 animate-fade-in">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in">
           {assets.map((asset) => (
             <div
               key={asset.id}
-              className="card-premium overflow-hidden flex flex-col justify-between"
+              className="flex flex-col rounded-lg border overflow-hidden"
+              style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)', boxShadow: '0 1px 4px 0 rgba(0,0,0,0.06)' }}
             >
               {/* Card Body */}
-              <div className="p-20 space-y-16">
-                <div className="flex items-start justify-between gap-12">
-                  <span className="font-mono text-xs font-semibold text-text-secondary bg-surface-sunken px-8 py-4 border border-border rounded-sm flex items-center gap-4">
-                    <Tag className="w-12 h-12 text-text-secondary" />
+              <div className="flex flex-col gap-3 p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="inline-flex items-center gap-1.5 font-mono text-xs font-medium px-2 py-1 rounded border" style={{ background: 'var(--color-surface-sunken)', color: 'var(--color-text-secondary)', borderColor: 'var(--color-border)' }}>
+                    <Tag className="w-3 h-3" />
                     {asset.assetTag}
                   </span>
-                  <span className={`text-[10px] px-8 py-2 font-bold rounded-full border ${getStatusColor(asset.status)}`}>
+                  <span className={`text-xs px-2 py-0.5 font-semibold rounded-full border ${getStatusColor(asset.status)}`}>
                     {asset.status}
                   </span>
                 </div>
 
-                <div className="space-y-4">
-                  <h3 className="font-bold text-sm text-text-primary truncate">{asset.name}</h3>
-                  <p className="text-[11px] text-text-secondary">{asset.category.name}</p>
+                <div>
+                  <h3 className="font-semibold text-sm truncate" style={{ color: 'var(--color-text-primary)' }}>{asset.name}</h3>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>{asset.category.name}</p>
                 </div>
 
-                <div className="space-y-8 pt-8 border-t border-border/40 text-xs text-text-secondary">
-                  <div className="flex items-center gap-8">
-                    <MapPin className="w-14 h-14 text-text-muted" />
+                <div className="flex flex-col gap-1.5 pt-3 border-t text-xs" style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-secondary)' }}>
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--color-text-muted)' }} />
                     <span className="truncate">{asset.location}</span>
                   </div>
-
-                  <div className="flex items-center gap-8">
-                    <Calendar className="w-14 h-14 text-text-muted" />
-                    <span>Acquired: {new Date(asset.acquisitionDate).toLocaleDateString()}</span>
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--color-text-muted)' }} />
+                    <span>Acquired {new Date(asset.acquisitionDate).toLocaleDateString()}</span>
                   </div>
-
-                  <div className="flex items-center gap-8">
-                    <ShieldCheck className="w-14 h-14 text-text-muted" />
-                    <span>Condition: <strong className="text-text-primary">{asset.condition}</strong></span>
+                  <div className="flex items-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--color-text-muted)' }} />
+                    <span>Condition: <strong style={{ color: 'var(--color-text-primary)' }}>{asset.condition}</strong></span>
                   </div>
                 </div>
               </div>
 
               {/* Card Footer */}
-              <div className="bg-[#F7F8FA] border-t border-border/80 px-20 py-12 flex items-center justify-between text-xs">
-                <div>
-                  {asset.isBookable && (
-                    <span className="bg-accent-subtle text-accent text-[10px] px-8 py-2 rounded font-semibold">
-                      Bookable
-                    </span>
-                  )}
-                </div>
+              <div className="mt-auto flex items-center justify-between px-4 py-2.5 border-t text-xs" style={{ borderColor: 'var(--color-border)', background: 'var(--color-surface-sunken)' }}>
+                {asset.isBookable ? (
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded" style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent)' }}>Bookable</span>
+                ) : <span />}
                 <Link
                   to={`/assets/${asset.id}`}
-                  className="text-accent hover:text-accent-hover font-bold text-xs"
+                  className="text-xs font-semibold transition-colors"
+                  style={{ color: 'var(--color-accent)' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-accent-hover)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--color-accent)')}
                 >
                   View Details →
                 </Link>
@@ -327,149 +301,72 @@ export default function AssetDirectory() {
         </div>
       )}
 
-      {/* --- REGISTER ASSET MODAL --- */}
+      {/* Register Asset Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-text-primary/35 flex items-center justify-center z-50 p-16 animate-fade-in">
-          <div className="w-full max-w-[500px] p-24 bg-surface border border-border rounded space-y-24 shadow-lg animate-scale-up max-h-[90vh] overflow-y-auto">
-            <h3 className="text-md font-bold text-text-primary border-b border-border pb-8">
-              Register New Asset
-            </h3>
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 animate-fade-in" style={{ background: 'rgba(0,0,0,0.3)' }}>
+          <div className="w-full max-w-[500px] rounded-lg border shadow-[0_8px_24px_0_rgba(0,0,0,0.12)] animate-scale-up max-h-[90vh] overflow-y-auto" style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
+            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--color-border)' }}>
+              <h3 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>Register New Asset</h3>
+              <button onClick={() => setModalOpen(false)} className="text-sm" style={{ color: 'var(--color-text-muted)' }}>✕</button>
+            </div>
 
-            <form onSubmit={handleCreateAsset} className="space-y-16">
-              <div className="space-y-8">
-                <label className="block text-xs font-semibold text-text-secondary">Asset Name *</label>
-                <input
-                  type="text"
-                  className="w-full h-32 px-12 border border-border rounded bg-surface text-xs text-text-primary"
-                  placeholder="e.g. MacBook Pro M3 Max"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  required
-                />
+            <form onSubmit={handleCreateAsset} className="flex flex-col gap-4 p-6">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold" style={{ color: 'var(--color-text-secondary)' }}>Asset Name *</label>
+                <input type="text" className="h-9 px-3 rounded-md border text-sm focus:outline-none" style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text-primary)' }} placeholder="e.g. MacBook Pro M3 Max" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
               </div>
 
-              <div className="grid grid-cols-2 gap-12">
-                <div className="space-y-8">
-                  <label className="block text-xs font-semibold text-text-secondary">Category *</label>
-                  <select
-                    className="w-full h-32 px-8 border border-border rounded bg-surface text-xs text-text-secondary"
-                    value={form.categoryId}
-                    onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
-                    required
-                  >
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold" style={{ color: 'var(--color-text-secondary)' }}>Category *</label>
+                  <select className="h-9 px-3 rounded-md border text-sm focus:outline-none" style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text-secondary)' }} value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: e.target.value })} required>
                     <option value="">Select category</option>
-                    {categories.map((c) => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
-                    ))}
+                    {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                   </select>
                 </div>
-
-                <div className="space-y-8">
-                  <label className="block text-xs font-semibold text-text-secondary">Serial Number *</label>
-                  <input
-                    type="text"
-                    className="w-full h-32 px-12 border border-border rounded bg-surface text-xs text-text-primary"
-                    placeholder="e.g. C02X874K"
-                    value={form.serialNumber}
-                    onChange={(e) => setForm({ ...form, serialNumber: e.target.value })}
-                    required
-                  />
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold" style={{ color: 'var(--color-text-secondary)' }}>Serial Number *</label>
+                  <input type="text" className="h-9 px-3 rounded-md border text-sm focus:outline-none" style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text-primary)' }} placeholder="e.g. C02X874K" value={form.serialNumber} onChange={(e) => setForm({ ...form, serialNumber: e.target.value })} required />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-12">
-                <div className="space-y-8">
-                  <label className="block text-xs font-semibold text-text-secondary">Acquisition Date *</label>
-                  <input
-                    type="date"
-                    className="w-full h-32 px-12 border border-border rounded bg-surface text-xs text-text-primary"
-                    value={form.acquisitionDate}
-                    onChange={(e) => setForm({ ...form, acquisitionDate: e.target.value })}
-                    required
-                  />
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold" style={{ color: 'var(--color-text-secondary)' }}>Acquisition Date *</label>
+                  <input type="date" className="h-9 px-3 rounded-md border text-sm focus:outline-none" style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text-primary)' }} value={form.acquisitionDate} onChange={(e) => setForm({ ...form, acquisitionDate: e.target.value })} required />
                 </div>
-
-                <div className="space-y-8">
-                  <label className="block text-xs font-semibold text-text-secondary">Acquisition Cost (USD) *</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    className="w-full h-32 px-12 border border-border rounded bg-surface text-xs text-text-primary"
-                    placeholder="e.g. 2499.00"
-                    value={form.acquisitionCost}
-                    onChange={(e) => setForm({ ...form, acquisitionCost: e.target.value })}
-                    required
-                  />
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold" style={{ color: 'var(--color-text-secondary)' }}>Cost (USD) *</label>
+                  <input type="number" step="0.01" className="h-9 px-3 rounded-md border text-sm focus:outline-none" style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text-primary)' }} placeholder="e.g. 2499.00" value={form.acquisitionCost} onChange={(e) => setForm({ ...form, acquisitionCost: e.target.value })} required />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-12">
-                <div className="space-y-8">
-                  <label className="block text-xs font-semibold text-text-secondary">Condition *</label>
-                  <select
-                    className="w-full h-32 px-8 border border-border rounded bg-surface text-xs text-text-secondary"
-                    value={form.condition}
-                    onChange={(e) => setForm({ ...form, condition: e.target.value })}
-                    required
-                  >
-                    <option value="New">New</option>
-                    <option value="Good">Good</option>
-                    <option value="Fair">Fair</option>
-                    <option value="Damaged">Damaged</option>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold" style={{ color: 'var(--color-text-secondary)' }}>Condition *</label>
+                  <select className="h-9 px-3 rounded-md border text-sm focus:outline-none" style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text-secondary)' }} value={form.condition} onChange={(e) => setForm({ ...form, condition: e.target.value })} required>
+                    <option>New</option><option>Good</option><option>Fair</option><option>Damaged</option>
                   </select>
                 </div>
-
-                <div className="space-y-8">
-                  <label className="block text-xs font-semibold text-text-secondary">Location / Desk *</label>
-                  <input
-                    type="text"
-                    className="w-full h-32 px-12 border border-border rounded bg-surface text-xs text-text-primary"
-                    placeholder="e.g. Office Desk 12A"
-                    value={form.location}
-                    onChange={(e) => setForm({ ...form, location: e.target.value })}
-                    required
-                  />
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold" style={{ color: 'var(--color-text-secondary)' }}>Location *</label>
+                  <input type="text" className="h-9 px-3 rounded-md border text-sm focus:outline-none" style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text-primary)' }} placeholder="e.g. Office Desk 12A" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} required />
                 </div>
               </div>
 
-              <div className="space-y-8">
-                <label className="block text-xs font-semibold text-text-secondary">QR / Barcode Stub (Optional)</label>
-                <input
-                  type="text"
-                  className="w-full h-32 px-12 border border-border rounded bg-surface text-xs text-text-primary"
-                  placeholder="e.g. AF-QR-0418"
-                  value={form.qrCode}
-                  onChange={(e) => setForm({ ...form, qrCode: e.target.value })}
-                />
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold" style={{ color: 'var(--color-text-secondary)' }}>QR / Barcode (Optional)</label>
+                <input type="text" className="h-9 px-3 rounded-md border text-sm focus:outline-none" style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text-primary)' }} placeholder="e.g. AF-QR-0418" value={form.qrCode} onChange={(e) => setForm({ ...form, qrCode: e.target.value })} />
               </div>
 
-              <div className="flex items-center gap-8 select-none">
-                <input
-                  type="checkbox"
-                  id="isBookable"
-                  checked={form.isBookable}
-                  onChange={(e) => setForm({ ...form, isBookable: e.target.checked })}
-                />
-                <label htmlFor="isBookable" className="text-xs font-semibold text-text-secondary">
-                  Allow Employee Booking Reservations (Shared Resource)
-                </label>
-              </div>
+              <label className="flex items-center gap-2 text-sm cursor-pointer">
+                <input type="checkbox" id="isBookable" checked={form.isBookable} onChange={(e) => setForm({ ...form, isBookable: e.target.checked })} />
+                <span style={{ color: 'var(--color-text-secondary)' }}>Allow booking reservations (shared resource)</span>
+              </label>
 
-              <div className="flex justify-end gap-12 pt-16 border-t border-border">
-                <button
-                  type="button"
-                  onClick={() => setModalOpen(false)}
-                  className="border border-border hover:bg-neutral-subtle text-text-secondary text-xs font-semibold px-16 py-8 rounded-sm transition-colors btn-premium"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="bg-accent hover:bg-accent-hover text-white text-xs font-semibold px-16 py-8 rounded-sm transition-colors disabled:opacity-50 btn-premium"
-                >
-                  Register
-                </button>
+              <div className="flex justify-end gap-2 pt-4 border-t" style={{ borderColor: 'var(--color-border)' }}>
+                <button type="button" onClick={() => setModalOpen(false)} className="px-4 py-2 rounded-md border text-sm font-medium transition-colors" style={{ border: '1px solid var(--color-border)', color: 'var(--color-text-secondary)', background: 'var(--color-surface)' }}>Cancel</button>
+                <button type="submit" disabled={loading} className="px-4 py-2 rounded-md text-sm font-semibold text-white transition-colors disabled:opacity-50" style={{ background: 'var(--color-accent)' }}>Register</button>
               </div>
             </form>
           </div>

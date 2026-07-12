@@ -5,10 +5,6 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    // Spacing: DESIGN_GUIDE §3 — 4px base scale only.
-    // We extend Tailwind's default scale rather than replace it so that
-    // standard utilities still work, but we explicitly name the tokens
-    // we care about so they are easy to audit.
     extend: {
       colors: {
         // Core
@@ -48,38 +44,31 @@ export default {
         mono: ['IBM Plex Mono', 'JetBrains Mono', 'Menlo', 'monospace'],
       },
 
-      // Type scale — DESIGN_GUIDE §2 exact
+      // Type scale — DESIGN_GUIDE §2 — extend only, do not replace
       fontSize: {
-        xs:   ['0.75rem',   { lineHeight: '1.25', fontWeight: '500' }],   // 12px badges/meta
-        sm:   ['0.875rem',  { lineHeight: '1.43', fontWeight: '400' }],   // 14px body/labels
-        base: ['1rem',      { lineHeight: '1.5',  fontWeight: '400' }],   // 16px input text
-        lg:   ['1.125rem',  { lineHeight: '1.5',  fontWeight: '600' }],   // 18px card titles
-        xl:   ['1.5rem',    { lineHeight: '1.4',  fontWeight: '600' }],   // 24px screen titles
-        '2xl':['1.875rem',  { lineHeight: '1.3',  fontWeight: '700' }],   // 30px KPI numbers
+        xs:    ['0.75rem',  { lineHeight: '1rem'  }],   // 12px
+        sm:    ['0.875rem', { lineHeight: '1.25rem' }],  // 14px
+        base:  ['1rem',     { lineHeight: '1.5rem' }],   // 16px
+        lg:    ['1.125rem', { lineHeight: '1.75rem' }],  // 18px
+        xl:    ['1.25rem',  { lineHeight: '1.75rem' }],  // 20px
+        '2xl': ['1.5rem',   { lineHeight: '2rem'   }],  // 24px — KPI numbers
+        '3xl': ['1.875rem', { lineHeight: '2.25rem'}],  // 30px — screen titles
       },
 
       borderRadius: {
-        DEFAULT: '6px',   // cards, inputs
-        lg:      '6px',
+        DEFAULT: '6px',
+        sm:      '4px',
         md:      '6px',
-        sm:      '4px',   // badges, small buttons
+        lg:      '8px',
+        xl:      '12px',
         badge:   '9999px',
       },
 
-      // Explicit named spacing on 4px scale — DESIGN_GUIDE §3
-      spacing: {
-        '1':  '4px',
-        '2':  '8px',
-        '3':  '12px',
-        '4':  '16px',
-        '6':  '24px',
-        '8':  '32px',
-        '12': '48px',
-        '16': '64px',
-      },
-
-      // Fixed layout dimensions
+      // Fixed layout dimensions — not spacing overrides
       width: {
+        sidebar: '240px',
+      },
+      minWidth: {
         sidebar: '240px',
       },
       height: {
@@ -90,9 +79,9 @@ export default {
       },
 
       boxShadow: {
-        card: '0 1px 4px 0 rgba(0,0,0,0.06)',
-        'card-hover': '0 4px 12px 0 rgba(0,0,0,0.10)',
-        dropdown: '0 8px 24px 0 rgba(0,0,0,0.12)',
+        card:        '0 1px 4px 0 rgba(0,0,0,0.06)',
+        'card-hover':'0 4px 12px 0 rgba(0,0,0,0.10)',
+        dropdown:    '0 8px 24px 0 rgba(0,0,0,0.12)',
       },
     },
   },
