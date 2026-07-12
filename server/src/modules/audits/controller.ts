@@ -47,3 +47,26 @@ export const closeCycle = async (req: Request, res: Response, next: NextFunction
     next(err);
   }
 };
+
+export const getCycles = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = (req as any).user;
+    const cycles = await service.listAuditCycles({
+      role: user.role,
+      userId: user.userId
+    });
+    res.status(200).json({ cycles });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getCycleDetails = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const cycleId = parseInt(req.params.cycleId, 10);
+    const result = await service.getAuditCycleDetails(cycleId);
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+};

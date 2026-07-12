@@ -5,6 +5,9 @@ import { Role } from '@prisma/client';
 
 const router = Router();
 
+// Get maintenance requests list - accessible by any authenticated user
+router.get('/', authenticate, controller.getRequests);
+
 // Raise a maintenance request - accessible by any authenticated user
 router.post('/', authenticate, controller.createRequest);
 

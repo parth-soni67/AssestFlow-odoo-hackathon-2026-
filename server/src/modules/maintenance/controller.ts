@@ -68,3 +68,17 @@ export const startWork = async (req: Request, res: Response, next: NextFunction)
     next(err);
   }
 };
+
+export const getRequests = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = (req as any).user;
+    const requests = await service.listRequests({
+      role: user.role,
+      userId: user.userId,
+      departmentId: user.departmentId
+    });
+    res.status(200).json({ requests });
+  } catch (err) {
+    next(err);
+  }
+};

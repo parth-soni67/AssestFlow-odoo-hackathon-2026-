@@ -5,6 +5,12 @@ import { Role } from '@prisma/client';
 
 const router = Router();
 
+// Get audit cycles list - accessible by any authenticated user
+router.get('/', authenticate, controller.getCycles);
+
+// Get audit cycle details - accessible by any authenticated user
+router.get('/:cycleId', authenticate, controller.getCycleDetails);
+
 // Create a new audit cycle - Admin or AssetManager only
 router.post('/', authenticate, requireRole([Role.Admin, Role.AssetManager]), controller.createCycle);
 

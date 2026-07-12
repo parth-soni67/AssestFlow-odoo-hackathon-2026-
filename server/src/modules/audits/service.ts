@@ -346,3 +346,66 @@ export const closeAuditCycle = async (cycleId: number, executorId: number) => {
     return updatedCycle;
   });
 };
+
+export const listAuditCycles = async (filters: { role: string; userId: number }) => {
+  let cycles = await prisma.auditCycle.findMany({
+    orderBy: { dateRangeStart: 'desc' },
+    include: {
+      _count: { select: { auditItems: true } }
+    }
+  });
+
+  if (filters.role !== 'Admin' && filters.role !== 'AssetManager') {
+    cycles = cycles.filter(cycle => {
+      const auditors = Array.isArray(cycle.assignedAuditors)
+        ? (cycle.assignedAuditors as number[])
+        : [];
+      return auditors.includes(filters.userId);
+    });
+  }
+
+  return cycles;
+};
+
+export const getAuditCycleDetails = async (cycleId: number) => {
+  const cycle = await prisma.auditCycle.findUnique({
+    where: { id: cycleId },
+    include: {
+      auditItems: {
+        include: {
+          auditor: { select: { id: true, name: true, email: true } }
+        }
+      }
+    }
+  });
+
+  if (!cycle) {
+    throw new AppError(404, 'AUDIT_CYCLE_NOT_FOUND', 'Audit cycle not found.');
+  }
+
+  const assetWhere: any = {};
+  if (cycle.scopeDepartmentId) {
+    assetWhere.currentDepartmentId = cycle.scopeDepartmentId;
+  }
+  if (cycle.location) {
+    assetWhere.location = {
+      equals: cycle.location,
+      mode: 'insensitive'
+    };
+  }
+
+  // Only scope active assets (Available, Allocated, Reserved, UnderMaintenance)
+  assetWhere.status = {
+    in: [AssetStatus.Available, AssetStatus.Allocated, AssetStatus.Reserved, AssetStatus.UnderMaintenance]
+  };
+
+  const scopedAssets = await prisma.asset.findMany({
+    where: assetWhere,
+    include: {
+      currentDepartment: { select: { id: true, name: true } },
+      currentHolder: { select: { id: true, name: true, email: true } }
+    }
+  });
+
+  return { cycle, scopedAssets };
+};

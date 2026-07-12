@@ -296,3 +296,26 @@ export const startWork = async (id: number, executorId: number) => {
     return updatedRequest;
   });
 };
+
+export const listRequests = async (filters: { role: string; userId: number; departmentId?: number | null }) => {
+  let whereClause: any = {};
+  
+  if (filters.role === 'Employee') {
+    whereClause.raisedById = filters.userId;
+  } else if (filters.role === 'DepartmentHead') {
+    whereClause.OR = [
+      { raisedById: filters.userId },
+      { asset: { currentDepartmentId: filters.departmentId } }
+    ];
+  }
+  
+  return await prisma.maintenanceRequest.findMany({
+    where: whereClause,
+    include: {
+      asset: { select: { id: true, name: true, assetTag: true, status: true, location: true } },
+      raisedBy: { select: { id: true, name: true, email: true } },
+      approvedBy: { select: { id: true, name: true, email: true } }
+    },
+    orderBy: { createdAt: 'desc' }
+  });
+};

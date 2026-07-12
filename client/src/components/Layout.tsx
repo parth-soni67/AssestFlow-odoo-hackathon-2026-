@@ -111,7 +111,9 @@ export default function Layout() {
         {/* Navigation Links */}
         <nav className="flex-1 px-12 py-16 space-y-4 overflow-y-auto">
           {visibleNavItems.map((item) => {
-            const isActive = location.pathname === item.path;
+            const isActive = item.path === '/' 
+              ? location.pathname === '/' 
+              : location.pathname.startsWith(item.path);
             const Icon = item.icon;
             return (
               <Link
@@ -183,7 +185,9 @@ export default function Layout() {
             {/* Navigation Links */}
             <nav className="flex-1 space-y-4 overflow-y-auto">
               {visibleNavItems.map((item) => {
-                const isActive = location.pathname === item.path;
+                const isActive = item.path === '/' 
+                  ? location.pathname === '/' 
+                  : location.pathname.startsWith(item.path);
                 const Icon = item.icon;
                 return (
                   <Link

@@ -40,30 +40,30 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen w-screen flex items-center justify-center bg-[#F7F8FA] px-16 font-sans">
-      <div className="w-full max-w-[400px] p-24 bg-white border border-[#DDE1E6] rounded-[6px] space-y-24 shadow-sm">
+    <div className="min-h-screen w-screen flex items-center justify-center bg-bg px-16 font-sans">
+      <div className="w-full max-w-[400px] p-24 bg-surface border border-border rounded shadow-sm space-y-24">
         {/* Brand/Header */}
         <div className="text-center space-y-8">
-          <span className="inline-block bg-[#2F5DE0] text-white px-12 py-6 rounded-[4px] text-lg font-bold tracking-wider select-none">
+          <span className="inline-block bg-accent text-white px-12 py-6 rounded-sm text-lg font-bold tracking-wider select-none">
             AF
           </span>
-          <h1 className="text-xl font-bold text-[#1A1D23] tracking-tight">AssetFlow</h1>
-          <p className="text-sm text-[#5B6270]">Enterprise Resource & Asset Management</p>
+          <h1 className="text-xl font-bold text-text-primary tracking-tight">AssetFlow</h1>
+          <p className="text-sm text-text-secondary">Enterprise Resource & Asset Management</p>
         </div>
 
         {error && (
-          <div className="p-12 text-xs bg-[#FBEAE9] border border-[#C1352E] text-[#C1352E] rounded-[4px]">
+          <div className="p-12 text-xs bg-danger-subtle border border-danger text-danger rounded-sm">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-16">
           <div className="space-y-8">
-            <label className="block text-sm font-medium text-[#5B6270]">Email Address</label>
+            <label className="block text-sm font-medium text-text-secondary">Email Address</label>
             <input 
               type="email"
               placeholder="e.g. employee@assetflow.dev"
-              className="w-full h-36 px-12 border border-[#DDE1E6] rounded-[6px] bg-white text-sm text-[#1A1D23] placeholder-[#8A909C] transition-colors focus:border-[#2F5DE0] focus:ring-2 focus:ring-[#2F5DE0]/10 focus:outline-none"
+              className="w-full h-36 px-12 border border-border rounded bg-surface text-sm text-text-primary placeholder-text-muted transition-colors focus:border-accent focus:ring-2 focus:ring-accent/10 focus:outline-none"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
@@ -74,15 +74,15 @@ export default function Login() {
 
           <div className="space-y-8">
             <div className="flex justify-between items-center">
-              <label className="block text-sm font-medium text-[#5B6270]">Password</label>
-              <Link to="/forgot-password" className="text-xs font-medium text-[#2F5DE0] hover:text-[#274CBD] focus:outline-none focus:underline">
+              <label className="block text-sm font-medium text-text-secondary">Password</label>
+              <Link to="/forgot-password" className="text-xs font-medium text-accent hover:text-accent-hover focus:outline-none focus:underline">
                 Forgot password?
               </Link>
             </div>
             <input 
               type="password"
               placeholder="Enter your password"
-              className="w-full h-36 px-12 border border-[#DDE1E6] rounded-[6px] bg-white text-sm text-[#1A1D23] placeholder-[#8A909C] transition-colors focus:border-[#2F5DE0] focus:ring-2 focus:ring-[#2F5DE0]/10 focus:outline-none"
+              className="w-full h-36 px-12 border border-border rounded bg-surface text-sm text-text-primary placeholder-text-muted transition-colors focus:border-accent focus:ring-2 focus:ring-accent/10 focus:outline-none"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
@@ -93,16 +93,16 @@ export default function Login() {
 
           <button 
             type="submit"
-            className="w-full h-36 mt-8 flex items-center justify-center text-sm font-medium text-white bg-[#2F5DE0] hover:bg-[#274CBD] rounded-[6px] shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-[#2F5DE0]/20 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full h-36 mt-8 flex items-center justify-center text-sm font-medium text-white bg-accent hover:bg-accent-hover rounded-sm shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-accent/20 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={loading}
           >
             {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
 
-        <div className="text-center text-xs text-[#5B6270]">
+        <div className="text-center text-xs text-text-secondary">
           Don't have an account?{' '}
-          <Link to="/signup" className="font-semibold text-[#2F5DE0] hover:text-[#274CBD] focus:outline-none focus:underline">
+          <Link to="/signup" className="font-semibold text-accent hover:text-accent-hover focus:outline-none focus:underline">
             Request Sign Up
           </Link>
         </div>

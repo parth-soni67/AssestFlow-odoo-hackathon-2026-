@@ -31,6 +31,8 @@ import AssetDirectory from './modules/assets/AssetDirectory';
 import AssetDetail from './modules/assets/AssetDetail';
 import ActivityLogs from './modules/activity-logs/ActivityLogs';
 import Reports from './modules/reports/Reports';
+import Maintenance from './modules/maintenance/Maintenance';
+import Audits from './modules/audits/Audits';
 
 // Protected Admin Route Guard
 function AdminRoute({ children }: { children: React.ReactNode }) {
@@ -52,12 +54,7 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
 }
 
 // Temporary stubs for other pages to prevent router crashes on navigation
-const TempPlaceholder = ({ title }: { title: string }) => (
-  <div className="p-24 bg-surface border border-border rounded">
-    <h1 className="text-xl font-bold text-text-primary mb-12">{title}</h1>
-    <p className="text-sm text-text-secondary">This section is currently under development in subsequent loops.</p>
-  </div>
-);
+
 
 import BookingsCalendar from './modules/bookings/BookingsCalendar';
 
@@ -104,11 +101,11 @@ export const router = createBrowserRouter([
       },
       {
         path: 'maintenance',
-        element: <TempPlaceholder title="Maintenance Management" />,
+        element: <Maintenance />,
       },
       {
         path: 'audits',
-        element: <TempPlaceholder title="Asset Audits" />,
+        element: <Audits />,
       },
       {
         path: 'org-setup',
