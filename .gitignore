@@ -28,3 +28,6 @@ lerna-debug.log*
 .idea/
 .DS_Store
 Thumbs.db
+
+# Ignore root markdown files to keep remote repo clean
+/*.md
