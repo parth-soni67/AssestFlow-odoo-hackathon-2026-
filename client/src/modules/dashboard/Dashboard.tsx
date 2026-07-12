@@ -1,31 +1,44 @@
+/**
+ * Dashboard — landing screen.
+ *
+ * DESIGN_GUIDE §4: "The Dashboard is the closest thing to a hero screen
+ * and should lead with the KPI card row, not decorative imagery."
+ *
+ * KPI grid: CSS grid auto-fit, minmax(200px, 1fr), gap-4 (16px).
+ * All metric cards use the shared <KpiCard> component — never hand-rolled.
+ * At most 3 font sizes visible at once (text-xl title, text-sm body, text-xs meta).
+ */
+
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../lib/AuthContext';
 import { api } from '../../lib/api';
-import { 
-  FolderTree, 
-  UserCheck, 
-  Wrench, 
-  CalendarDays, 
-  ArrowLeftRight, 
-  AlertTriangle 
+import {
+  FolderTree,
+  UserCheck,
+  Wrench,
+  CalendarDays,
+  ArrowLeftRight,
+  AlertTriangle,
 } from 'lucide-react';
+import KpiCard from '../../components/KpiCard';
+import type { StatusTier } from '../../components/StatusBadge';
 
 interface DashboardStats {
-  availableAssets: number;
-  allocatedAssets: number;
-  underMaintenance: number;
-  activeBookingsToday: number;
-  pendingTransfers: number;
-  overdueReturns: number;
+  availableAssets:    number;
+  allocatedAssets:    number;
+  underMaintenance:   number;
+  activeBookingsToday:number;
+  pendingTransfers:   number;
+  overdueReturns:     number;
 }
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [stats,      setStats]      = useState<DashboardStats | null>(null);
   const [recentLogs, setRecentLogs] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading,  setIsLoading]  = useState(true);
+  const [error,      setError]      = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -33,12 +46,11 @@ export default function Dashboard() {
         setIsLoading(true);
         const [statsRes, logsRes] = await Promise.all([
           api.get('/dashboard/stats'),
-          api.get('/activity-logs?limit=5')
+          api.get('/activity-logs?limit=5'),
         ]);
         setStats(statsRes.data);
         setRecentLogs(logsRes.data.logs || []);
-      } catch (err: any) {
-        console.error('Failed to fetch dashboard data:', err);
+      } catch {
         setError('Could not load dashboard statistics. Please try again later.');
       } finally {
         setIsLoading(false);
@@ -47,126 +59,177 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  const kpis = [
-    { title: 'Available Assets', value: stats ? stats.availableAssets.toString() : '—', color: 'success', bg: 'bg-success-subtle', text: 'text-success', icon: FolderTree },
-    { title: 'Allocated Assets', value: stats ? stats.allocatedAssets.toString() : '—', color: 'info', bg: 'bg-info-subtle', text: 'text-info', icon: UserCheck },
-    { title: 'Under Maintenance', value: stats ? stats.underMaintenance.toString() : '—', color: 'alert', bg: 'bg-alert-subtle', text: 'text-alert', icon: Wrench },
-    { title: 'Active Bookings Today', value: stats ? stats.activeBookingsToday.toString() : '—', color: 'info', bg: 'bg-info-subtle', text: 'text-info', icon: CalendarDays },
-    { title: 'Pending Transfers', value: stats ? stats.pendingTransfers.toString() : '—', color: 'warning', bg: 'bg-warning-subtle', text: 'text-warning', icon: ArrowLeftRight },
-    { title: 'Overdue Returns', value: stats ? stats.overdueReturns.toString() : '—', color: 'danger', bg: 'bg-danger-subtle', text: 'text-danger', icon: AlertTriangle },
+  // KPI definitions — tier drives icon-badge colour via StatusBadge lookup
+  const kpis: Array<{
+    label: string;
+    value: number | string;
+    icon: typeof FolderTree;
+    tier: StatusTier;
+  }> = [
+    {
+      label: 'Available Assets',
+      value: stats?.availableAssets ?? '—',
+      icon:  FolderTree,
+      tier:  'success',
+    },
+    {
+      label: 'Allocated Assets',
+      value: stats?.allocatedAssets ?? '—',
+      icon:  UserCheck,
+      tier:  'info',
+    },
+    {
+      label: 'Under Maintenance',
+      value: stats?.underMaintenance ?? '—',
+      icon:  Wrench,
+      tier:  'alert',
+    },
+    {
+      label: 'Active Bookings Today',
+      value: stats?.activeBookingsToday ?? '—',
+      icon:  CalendarDays,
+      tier:  'info',
+    },
+    {
+      label: 'Pending Transfers',
+      value: stats?.pendingTransfers ?? '—',
+      icon:  ArrowLeftRight,
+      tier:  'warning',
+    },
+    {
+      label: 'Overdue Returns',
+      value: stats?.overdueReturns ?? '—',
+      icon:  AlertTriangle,
+      tier:  'danger',
+    },
   ];
 
-  const overdueCount = stats ? stats.overdueReturns : 0;
+  const overdueCount = stats?.overdueReturns ?? 0;
 
   return (
-    <div className="space-y-24">
-      {/* Welcome Banner */}
+    <div className="flex flex-col gap-6">
+
+      {/* ── Page heading — text-xl per DESIGN_GUIDE §2 screen titles ── */}
       <div>
-        <h1 className="text-xl font-bold text-text-primary">Welcome Back, {user?.name || 'User'}</h1>
-        <p className="text-sm text-text-secondary">Here is an overview of the organization's resource status today.</p>
+        <h2 className="text-xl font-semibold text-text-primary">
+          Welcome back, {user?.name ?? 'User'}
+        </h2>
+        <p className="text-sm text-text-secondary mt-1">
+          Here is an overview of the organisation's resource status today.
+        </p>
       </div>
 
+      {/* ── Error banner ── */}
       {error && (
-        <div className="p-16 bg-danger-subtle text-danger text-xs font-semibold rounded border border-danger/10">
+        <div
+          role="alert"
+          className="px-4 py-3 bg-danger-subtle border border-danger text-danger text-sm rounded"
+        >
           {error}
         </div>
       )}
 
-      {/* KPI Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-16">
-        {kpis.map((kpi) => {
-          const Icon = kpi.icon;
-          return (
-            <div key={kpi.title} className="p-20 card-premium flex flex-col justify-between h-[130px] animate-scale-up">
-              <div className="flex justify-between items-start">
-                <span className="text-[11px] font-bold text-text-secondary max-w-[8%] leading-tight tracking-tight uppercase">{kpi.title}</span>
-                <span className={`p-8 rounded-full ${kpi.bg} ${kpi.text} shadow-xs`}>
-                  <Icon className="w-16 h-16" />
-                </span>
-              </div>
-              <div className="text-3xl font-black text-text-primary tracking-tight mt-12">
-                {isLoading ? (
-                  <span className="text-xs font-normal text-text-muted">Loading...</span>
-                ) : (
-                  kpi.value
-                )}
-              </div>
-            </div>
-          );
-        })}
+      {/* ── KPI row — DESIGN_GUIDE §4: auto-fit grid, gap-4 (16px) ── */}
+      <div
+        className="grid gap-4"
+        style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}
+      >
+        {kpis.map((kpi) => (
+          <KpiCard
+            key={kpi.label}
+            label={kpi.label}
+            value={kpi.value}
+            icon={kpi.icon}
+            tier={kpi.tier}
+            loading={isLoading}
+          />
+        ))}
       </div>
 
-      {/* Overdue alert section */}
-      {overdueCount > 0 && (
-        <div className="p-24 rounded-md border border-alert/20 bg-alert-subtle space-y-12 shadow-[0_4px_12px_rgba(225,29,72,0.05)] animate-scale-up">
-          <div className="flex items-center gap-12 text-alert">
-            <AlertTriangle className="w-20 h-20" />
-            <h3 className="text-sm font-black">Critical Overdue Items</h3>
+      {/* ── Overdue alert — only shown when there are overdue items ── */}
+      {!isLoading && overdueCount > 0 && (
+        <div
+          role="alert"
+          className="flex items-start gap-3 px-4 py-3 bg-alert-subtle border border-alert rounded"
+        >
+          <AlertTriangle className="w-5 h-5 text-alert shrink-0 mt-0.5" aria-hidden="true" />
+          <div>
+            <p className="text-sm font-semibold text-alert">
+              {overdueCount} overdue return{overdueCount !== 1 ? 's' : ''} require attention
+            </p>
+            <p className="text-sm text-text-secondary mt-1">
+              Coordinate with asset holders immediately to resolve overdue allocations.
+            </p>
           </div>
-          <p className="text-xs text-text-secondary">
-            There are {overdueCount} item{overdueCount > 1 ? 's' : ''} currently flagged as overdue. Please coordinate with holders immediately.
-          </p>
         </div>
       )}
 
-      {/* Empty States / Main Panels placeholders */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-24">
-        {/* Recent Activity Log */}
-        <div className="p-24 card-premium flex flex-col justify-between min-h-[320px]">
-          <div className="space-y-16">
-            <h3 className="text-sm font-black text-text-primary pb-8 border-b border-border/60">Recent Activity Log</h3>
-            <div className="divide-y divide-border/60">
-              {isLoading ? (
-                <div className="py-24 text-center text-xs text-text-muted">Loading activities...</div>
-              ) : recentLogs.length === 0 ? (
-                <div className="py-24 text-center text-xs text-text-muted">No activity registered yet</div>
-              ) : (
-                recentLogs.map((log: any) => (
-                  <div key={log.id} className="py-12 text-xs flex justify-between items-center hover:bg-surface-sunken/35 px-8 rounded transition-colors">
-                    <div className="space-y-2">
-                      <span className="font-bold text-text-primary">{log.action}</span>
-                      <p className="text-text-secondary text-[11px]">By {log.user?.name || log.user?.email}</p>
-                    </div>
-                    <span className="font-mono text-[10px] text-text-muted">
-                      {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
+      {/* ── Secondary panels — activity log + upcoming bookings ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        {/* Recent Activity */}
+        <div className="bg-surface border border-border rounded p-6 shadow-card flex flex-col min-h-80">
+          <h3 className="text-sm font-semibold text-text-primary pb-3 border-b border-border">
+            Recent Activity
+          </h3>
+
+          <div className="flex-1 divide-y divide-border mt-3">
+            {isLoading ? (
+              <p className="py-6 text-xs text-text-muted text-center">Loading…</p>
+            ) : recentLogs.length === 0 ? (
+              <p className="py-6 text-xs text-text-muted text-center">No activity recorded yet.</p>
+            ) : (
+              recentLogs.map((log: any) => (
+                <div
+                  key={log.id}
+                  className="flex items-center justify-between py-3 px-2 hover:bg-surface-sunken rounded transition-colors"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-text-primary">{log.action}</p>
+                    <p className="text-xs text-text-muted">
+                      {log.user?.name ?? log.user?.email}
+                    </p>
                   </div>
-                ))
-              )}
-            </div>
+                  <time
+                    className="text-xs font-mono text-text-muted shrink-0"
+                    dateTime={log.timestamp}
+                  >
+                    {new Date(log.timestamp).toLocaleTimeString([], {
+                      hour: '2-digit', minute: '2-digit',
+                    })}
+                  </time>
+                </div>
+              ))
+            )}
           </div>
-          <div className="pt-12 border-t border-border/60 mt-16">
-            <Link 
-              to="/activity-log" 
-              className="text-xs text-accent hover:text-accent-hover font-bold inline-block"
-            >
-              View Full Activity Log &rarr;
+
+          <div className="pt-3 border-t border-border mt-3">
+            <Link to="/activity-log" className="text-xs font-semibold text-accent hover:text-accent-hover">
+              View full log →
             </Link>
           </div>
         </div>
 
-        {/* Upcoming Bookings placeholder */}
-        <div className="p-24 card-premium flex flex-col justify-between min-h-[320px]">
-          <div className="space-y-16">
-            <h3 className="text-sm font-black text-text-primary pb-8 border-b border-border/60">Upcoming Bookings</h3>
-            <div className="py-32 text-center space-y-12">
-              <div className="w-48 h-48 rounded-full bg-accent-subtle text-accent flex items-center justify-center mx-auto shadow-xs">
-                <CalendarDays className="w-24 h-24" />
-              </div>
-              <p className="text-xs text-text-secondary font-semibold max-w-[280px] mx-auto leading-relaxed">
-                No upcoming bookings scheduled for your department this week.
-              </p>
-            </div>
+        {/* Upcoming Bookings */}
+        <div className="bg-surface border border-border rounded p-6 shadow-card flex flex-col min-h-80">
+          <h3 className="text-sm font-semibold text-text-primary pb-3 border-b border-border">
+            Upcoming Bookings
+          </h3>
+
+          <div className="flex-1 flex flex-col items-center justify-center py-8 gap-3">
+            <CalendarDays className="w-8 h-8 text-text-muted" aria-hidden="true" />
+            <p className="text-sm text-text-secondary text-center max-w-xs">
+              No upcoming bookings scheduled for your department this week.
+            </p>
           </div>
-          <div className="pt-12 border-t border-border/60 mt-16">
-            <Link 
-              to="/bookings" 
-              className="text-xs text-accent hover:text-accent-hover font-bold inline-block"
-            >
-              Schedule New Booking &rarr;
+
+          <div className="pt-3 border-t border-border mt-3">
+            <Link to="/bookings" className="text-xs font-semibold text-accent hover:text-accent-hover">
+              Schedule a booking →
             </Link>
           </div>
         </div>
+
       </div>
     </div>
   );

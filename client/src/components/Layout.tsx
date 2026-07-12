@@ -1,338 +1,444 @@
+/**
+ * Layout — app shell.
+ *
+ * DESIGN_GUIDE §4 topology — EXACT:
+ *
+ *   Fixed 240px sidebar  │  64px top bar
+ *                        │  ─────────────────────────────────
+ *                        │  Content: max-w-[1280px], centered
+ *                        │  px-6 (24px) desktop / px-4 (16px) mobile
+ *
+ * Sidebar has exactly THREE sibling regions, each a separate sub-component
+ * with its own container. None of the three ever shares a hover, active, or
+ * selected state with either of the others. They are siblings — never nested
+ * inside a shared clickable wrapper.
+ *
+ *   <SidebarLogo />        — fixed 64px height, brand only, no hover state
+ *   <SidebarNav />         — flex-1, scrollable, nav links with active state
+ *   <SidebarUserFooter />  — pinned bottom, surface-sunken bg, sign-out only
+ */
+
 import { useState, useEffect, useRef } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/AuthContext';
 import { api } from '../lib/api';
-import { 
-  LayoutDashboard, 
-  Settings, 
-  FolderTree, 
-  CalendarDays, 
-  Wrench, 
-  ClipboardCheck, 
-  BarChart3, 
-  Bell, 
+import {
+  LayoutDashboard,
+  Settings,
+  FolderTree,
+  CalendarDays,
+  Wrench,
+  ClipboardCheck,
+  BarChart3,
+  Bell,
   LogOut,
-  User,
   CheckCheck,
   History,
   Menu,
-  X
+  X,
 } from 'lucide-react';
 
+/* ── Nav item definitions ─────────────────────────────────────────────── */
+
+const NAV_ITEMS = [
+  { name: 'Dashboard',    path: '/',            icon: LayoutDashboard },
+  { name: 'Assets',       path: '/assets',      icon: FolderTree      },
+  { name: 'Bookings',     path: '/bookings',    icon: CalendarDays    },
+  { name: 'Maintenance',  path: '/maintenance', icon: Wrench          },
+  { name: 'Audits',       path: '/audits',      icon: ClipboardCheck  },
+  { name: 'Activity Log', path: '/activity-log',icon: History         },
+  { name: 'Org Setup',    path: '/org-setup',   icon: Settings        },
+  { name: 'Reports',      path: '/reports',     icon: BarChart3       },
+];
+
+/* ── Sub-components ───────────────────────────────────────────────────── */
+
+/**
+ * SidebarLogo
+ * Fixed 64px height. Brand wordmark only.
+ * No hover state. No active state. Never clickable as a nav item.
+ * The Link wraps the brand only so the logo navigates home — it is NOT
+ * a nav link and has no selected/active visual treatment.
+ */
+function SidebarLogo() {
+  return (
+    <div
+      className="flex items-center h-16 px-4 border-b border-border bg-surface shrink-0"
+      // 64px height = spacing-16 token
+    >
+      <Link
+        to="/"
+        className="flex items-center gap-2 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+        aria-label="AssetFlow home"
+      >
+        {/* Brand mark */}
+        <span className="flex items-center justify-center w-8 h-8 rounded bg-accent text-white text-xs font-bold shrink-0">
+          AF
+        </span>
+        <span className="text-sm font-bold text-text-primary tracking-tight">
+          AssetFlow
+        </span>
+      </Link>
+    </div>
+  );
+}
+
+/**
+ * SidebarNav
+ * flex-1, scrollable, contains nav links.
+ * Only this region ever shows active/hover nav states.
+ */
+interface SidebarNavProps {
+  visibleItems: typeof NAV_ITEMS;
+  currentPath: string;
+  onNavigate?: () => void;
+}
+
+function SidebarNav({ visibleItems, currentPath, onNavigate }: SidebarNavProps) {
+  return (
+    <nav
+      className="flex-1 overflow-y-auto py-2 px-2"
+      // py-8 px-8 = inner breathing room
+      aria-label="Main navigation"
+    >
+      <ul className="flex flex-col gap-1" role="list">
+        {visibleItems.map((item) => {
+          const isActive =
+            item.path === '/'
+              ? currentPath === '/'
+              : currentPath.startsWith(item.path);
+          const Icon = item.icon;
+
+          return (
+            <li key={item.name}>
+              <Link
+                to={item.path}
+                onClick={onNavigate}
+                aria-current={isActive ? 'page' : undefined}
+                className={[
+                  'flex items-center gap-2 px-3 py-2 rounded text-sm font-medium',
+                  'transition-colors duration-150',
+                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+                  isActive
+                    ? 'bg-accent-subtle text-accent font-semibold'
+                    : 'text-text-secondary hover:bg-surface-sunken hover:text-text-primary',
+                ].join(' ')}
+              >
+                {/* Left accent bar for active state */}
+                {isActive && (
+                  <span className="absolute left-0 w-1 h-6 bg-accent rounded-r" aria-hidden="true" />
+                )}
+                <Icon className="w-5 h-5 shrink-0" aria-hidden="true" />
+                <span>{item.name}</span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}
+
+/**
+ * SidebarUserFooter
+ * Pinned to bottom. surface-sunken background.
+ * No hover/active nav state — sign-out action only.
+ */
+interface SidebarUserFooterProps {
+  userName: string;
+  userRole: string;
+  onLogout: () => void;
+}
+
+function SidebarUserFooter({ userName, userRole, onLogout }: SidebarUserFooterProps) {
+  return (
+    <div className="shrink-0 p-4 border-t border-border bg-surface-sunken">
+      {/* User identity — not clickable, not a nav item */}
+      <div className="flex items-center gap-2 mb-3">
+        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-accent text-white text-xs font-bold shrink-0">
+          {userName.charAt(0).toUpperCase()}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold text-text-primary truncate leading-none">{userName}</p>
+          <p className="text-xs text-text-muted truncate mt-1">{userRole}</p>
+        </div>
+      </div>
+
+      {/* Sign out — secondary action, not a nav link */}
+      <button
+        onClick={onLogout}
+        className="flex w-full items-center justify-center gap-2 h-9 px-3 rounded border border-border bg-surface text-xs font-semibold text-text-secondary transition-colors hover:bg-surface hover:text-danger hover:border-danger focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        type="button"
+      >
+        <LogOut className="w-4 h-4" aria-hidden="true" />
+        Sign Out
+      </button>
+    </div>
+  );
+}
+
+/* ── Notifications dropdown ───────────────────────────────────────────── */
+
+interface NotificationDropdownProps {
+  notifications: any[];
+  unreadCount: number;
+  isOpen: boolean;
+  onToggle: () => void;
+  onMarkRead: (id: number) => void;
+  onMarkAllRead: () => void;
+  dropdownRef: React.RefObject<HTMLDivElement>;
+}
+
+function NotificationDropdown({
+  notifications,
+  unreadCount,
+  isOpen,
+  onToggle,
+  onMarkRead,
+  onMarkAllRead,
+  dropdownRef,
+}: NotificationDropdownProps) {
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        onClick={onToggle}
+        className="relative flex items-center justify-center w-9 h-9 rounded text-text-secondary hover:bg-surface-sunken hover:text-text-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+      >
+        <Bell className="w-5 h-5" aria-hidden="true" />
+        {unreadCount > 0 && (
+          <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-alert" aria-hidden="true" />
+        )}
+      </button>
+
+      {isOpen && (
+        <div
+          role="menu"
+          className="absolute right-0 mt-1 w-80 bg-surface border border-border rounded shadow-dropdown z-50 flex flex-col max-h-96 animate-scale-up"
+        >
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-surface-sunken shrink-0">
+            <span className="text-xs font-semibold text-text-primary">
+              Notifications {unreadCount > 0 && <span className="text-accent">({unreadCount})</span>}
+            </span>
+            {unreadCount > 0 && (
+              <button
+                onClick={onMarkAllRead}
+                className="flex items-center gap-1 text-xs text-accent hover:text-accent-hover font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+              >
+                <CheckCheck className="w-3 h-3" />
+                Mark all read
+              </button>
+            )}
+          </div>
+
+          <div className="overflow-y-auto divide-y divide-border">
+            {notifications.length === 0 ? (
+              <p className="p-6 text-xs text-text-muted text-center">No notifications.</p>
+            ) : (
+              notifications.map((n) => (
+                <div
+                  key={n.id}
+                  role="menuitem"
+                  onClick={() => !n.isRead && onMarkRead(n.id)}
+                  className={[
+                    'flex gap-2 items-start px-4 py-3 text-xs cursor-pointer',
+                    'hover:bg-surface-sunken transition-colors',
+                    !n.isRead ? 'bg-accent-subtle' : '',
+                  ].join(' ')}
+                >
+                  {!n.isRead && (
+                    <span className="mt-1 w-2 h-2 rounded-full bg-accent shrink-0" aria-hidden="true" />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className={['text-text-primary leading-snug', !n.isRead ? 'font-semibold' : ''].join(' ')}>
+                      {n.message}
+                    </p>
+                    <p className="text-text-muted mt-1 font-mono text-xs">
+                      {new Date(n.createdAt).toLocaleString([], {
+                        month: 'short', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit',
+                      })}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Root Layout ──────────────────────────────────────────────────────── */
+
 export default function Layout() {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const location  = useLocation();
+  const navigate  = useNavigate();
   const { user, logout } = useAuth();
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const [notifications,    setNotifications]    = useState<any[]>([]);
+  const [isNotifOpen,      setIsNotifOpen]      = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  /* Fetch notifications */
   const fetchNotifications = async () => {
     try {
-      const response = await api.get('/notifications');
-      setNotifications(response.data.notifications || []);
-    } catch (err) {
-      console.error('Failed to fetch notifications:', err);
-    }
+      const res = await api.get('/notifications');
+      setNotifications(res.data.notifications || []);
+    } catch { /* silent */ }
   };
 
   useEffect(() => {
-    if (user) {
-      fetchNotifications();
-      const interval = setInterval(fetchNotifications, 30000);
-      return () => clearInterval(interval);
-    }
+    if (!user) return;
+    fetchNotifications();
+    const id = setInterval(fetchNotifications, 30_000);
+    return () => clearInterval(id);
   }, [user]);
 
+  /* Close notification dropdown on outside click */
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
+    function handler(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsNotifOpen(false);
       }
     }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  const handleMarkAsRead = async (id: number) => {
+  /* Close mobile menu on route change */
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  const handleMarkRead = async (id: number) => {
     try {
       await api.post(`/notifications/${id}/read`);
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
-    } catch (err) {
-      console.error('Failed to mark notification as read:', err);
-    }
+    } catch { /* silent */ }
   };
 
-  const handleMarkAllAsRead = async () => {
+  const handleMarkAllRead = async () => {
     try {
       await api.post('/notifications/read-all');
       setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
-    } catch (err) {
-      console.error('Failed to mark all notifications as read:', err);
-    }
+    } catch { /* silent */ }
   };
+
+  const handleLogout = () => { logout(); navigate('/login'); };
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
-  const navItems = [
-    { name: 'Dashboard', path: '/', icon: LayoutDashboard },
-    { name: 'Assets', path: '/assets', icon: FolderTree },
-    { name: 'Bookings', path: '/bookings', icon: CalendarDays },
-    { name: 'Maintenance', path: '/maintenance', icon: Wrench },
-    { name: 'Audits', path: '/audits', icon: ClipboardCheck },
-    { name: 'Activity Log', path: '/activity-log', icon: History },
-    { name: 'Org Setup', path: '/org-setup', icon: Settings },
-    { name: 'Reports', path: '/reports', icon: BarChart3 },
-  ];
-
-  // Only allow Admins to see the Organization Setup navigation item
-  const visibleNavItems = navItems.filter(
-    (item) => item.path !== '/org-setup' || user?.role === 'Admin'
+  // Admin-only items filtered out for non-admins
+  const visibleNavItems = NAV_ITEMS.filter(
+    item => item.path !== '/org-setup' || user?.role === 'Admin'
   );
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  // Current screen title for top bar
+  const screenTitle =
+    NAV_ITEMS.find(item =>
+      item.path === '/'
+        ? location.pathname === '/'
+        : location.pathname.startsWith(item.path)
+    )?.name ?? 'AssetFlow';
+
+  /* ── Shared sidebar content (desktop + mobile) ── */
+  const sidebarContent = (
+    <>
+      <SidebarLogo />
+      <SidebarNav
+        visibleItems={visibleNavItems}
+        currentPath={location.pathname}
+        onNavigate={() => setIsMobileMenuOpen(false)}
+      />
+      <SidebarUserFooter
+        userName={user?.name ?? 'User'}
+        userRole={user?.role ?? ''}
+        onLogout={handleLogout}
+      />
+    </>
+  );
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-bg">
-      {/* Sidebar (Desktop) */}
-      <aside className="hidden md:flex md:w-[240px] md:flex-col border-r border-border bg-surface relative z-30 shadow-sm">
-        {/* Brand Header */}
-        <div className="h-16 flex items-center px-24 border-b border-border bg-surface">
-          <Link to="/" className="flex items-center gap-8 font-sans font-black text-md text-text-primary tracking-tight select-none">
-            <span className="bg-gradient-to-r from-accent to-accent-hover text-white px-10 py-6 rounded text-xs font-black shadow-sm">
-              AF
-            </span>
-            <span className="bg-gradient-to-r from-text-primary to-text-secondary bg-clip-text text-transparent">AssetFlow</span>
-          </Link>
-        </div>
 
-        {/* Navigation Links */}
-        <nav className="flex-1 px-12 py-16 space-y-4 overflow-y-auto">
-          {visibleNavItems.map((item) => {
-            const isActive = item.path === '/' 
-              ? location.pathname === '/' 
-              : location.pathname.startsWith(item.path);
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={`flex items-center gap-12 px-12 py-8 text-xs font-semibold rounded transition-all duration-200 active:scale-[0.98] ${
-                  isActive 
-                    ? 'bg-accent text-white shadow-md shadow-accent/15 scale-[1.02]' 
-                    : 'text-text-secondary hover:bg-surface-sunken hover:text-text-primary'
-                }`}
-              >
-                <Icon className="w-20 h-20" />
-                <span>{item.name}</span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* User profile footer */}
-        <div className="p-16 border-t border-border bg-surface-sunken">
-          <div className="flex items-center gap-12 mb-12">
-            <div className="w-32 h-32 rounded-full bg-accent text-white flex items-center justify-center font-bold text-xs shadow-sm">
-              {user?.name?.charAt(0) || 'U'}
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-bold text-text-primary truncate">{user?.name || 'User'}</p>
-              <p className="text-[10px] font-semibold text-text-muted truncate">{user?.role || 'Guest'}</p>
-            </div>
-          </div>
-          <button 
-            onClick={handleLogout}
-            className="btn-premium flex w-full items-center justify-center gap-8 px-12 py-8 text-[11px] font-bold text-text-secondary hover:text-accent rounded border border-border bg-surface hover:bg-surface-sunken"
-          >
-            <LogOut className="w-16 h-16" />
-            <span>Sign Out</span>
-          </button>
-        </div>
+      {/* ── Desktop sidebar — fixed 240px ── */}
+      <aside className="hidden md:flex md:flex-col md:w-sidebar shrink-0 border-r border-border bg-surface relative z-30">
+        {sidebarContent}
       </aside>
 
-      {/* Mobile Drawer Navigation Menu */}
+      {/* ── Mobile drawer ── */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 flex md:hidden">
+        <div className="fixed inset-0 z-50 flex md:hidden" role="dialog" aria-modal="true" aria-label="Navigation menu">
           {/* Backdrop */}
-          <div 
-            className="fixed inset-0 bg-text-primary/40 backdrop-blur-xs transition-opacity"
+          <div
+            className="absolute inset-0 bg-text-primary/40 backdrop-blur-sm"
             onClick={() => setIsMobileMenuOpen(false)}
-          ></div>
-          
-          {/* Drawer Content */}
-          <div className="relative flex w-[240px] flex-col bg-surface border-r border-border h-full p-16 shadow-2xl animate-scale-up">
-            {/* Header */}
-            <div className="h-16 flex items-center justify-between px-8 border-b border-border mb-16">
-              <Link 
-                to="/" 
-                className="flex items-center gap-8 font-sans font-black text-md text-text-primary tracking-tight"
+          />
+          {/* Drawer */}
+          <div className="relative flex flex-col w-sidebar bg-surface border-r border-border h-full shadow-dropdown animate-slide-up z-10">
+            <div className="absolute top-3 right-3">
+              <button
                 onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-center w-8 h-8 rounded text-text-secondary hover:bg-surface-sunken transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                aria-label="Close menu"
               >
-                <span className="bg-gradient-to-r from-accent to-accent-hover text-white px-10 py-6 rounded text-xs font-black shadow-sm">
-                  AF
-                </span>
-                <span>AssetFlow</span>
-              </Link>
-              <button 
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="p-8 text-text-secondary hover:text-text-primary focus:outline-none"
-              >
-                <X className="w-20 h-20" />
+                <X className="w-5 h-5" />
               </button>
             </div>
-
-            {/* Navigation Links */}
-            <nav className="flex-1 space-y-4 overflow-y-auto">
-              {visibleNavItems.map((item) => {
-                const isActive = item.path === '/' 
-                  ? location.pathname === '/' 
-                  : location.pathname.startsWith(item.path);
-                const Icon = item.icon;
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-12 px-12 py-8 text-xs font-semibold rounded transition-all duration-200 active:scale-[0.98] ${
-                      isActive 
-                        ? 'bg-accent text-white shadow-md shadow-accent/15 scale-[1.02]' 
-                        : 'text-text-secondary hover:bg-surface-sunken hover:text-text-primary'
-                    }`}
-                  >
-                    <Icon className="w-20 h-20" />
-                    <span>{item.name}</span>
-                  </Link>
-                );
-              })}
-            </nav>
-
-            {/* User Info Footer */}
-            <div className="p-16 border-t border-border bg-surface-sunken rounded mt-16">
-              <div className="flex items-center gap-12 mb-12">
-                <div className="w-32 h-32 rounded-full bg-accent text-white flex items-center justify-center font-bold text-xs shadow-sm">
-                  {user?.name?.charAt(0) || 'U'}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs font-bold text-text-primary truncate">{user?.name || 'User'}</p>
-                  <p className="text-[10px] font-semibold text-text-muted truncate">{user?.role || 'Guest'}</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  handleLogout();
-                }}
-                className="btn-premium flex w-full items-center justify-center gap-8 px-12 py-8 text-[11px] font-bold text-text-secondary hover:text-accent rounded border border-border bg-surface hover:bg-surface-sunken"
-              >
-                <LogOut className="w-16 h-16" />
-                <span>Sign Out</span>
-              </button>
-            </div>
+            {sidebarContent}
           </div>
         </div>
       )}
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative z-10">
-        {/* Header */}
-        <header className="h-16 bg-surface border-b border-border flex items-center justify-between px-24 relative z-40 shadow-xs">
-          <div className="flex items-center gap-12">
-            {/* Hamburger Trigger button */}
+      {/* ── Main column (top bar + content) ── */}
+      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+
+        {/* ── Top bar — fixed 64px ── */}
+        <header className="flex items-center justify-between h-16 px-6 bg-surface border-b border-border shrink-0 z-20">
+          <div className="flex items-center gap-3">
+            {/* Hamburger — mobile only */}
             <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="p-8 text-text-secondary hover:text-text-primary hover:bg-surface-sunken rounded md:hidden transition-colors"
+              className="md:hidden flex items-center justify-center w-9 h-9 rounded text-text-secondary hover:bg-surface-sunken transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              aria-label="Open menu"
             >
-              <Menu className="w-20 h-20" />
+              <Menu className="w-5 h-5" />
             </button>
-            <h2 className="text-sm font-black tracking-tight text-text-primary">
-              {navItems.find(item => item.path === location.pathname)?.name || 'AssetFlow'}
-            </h2>
+            {/* Screen title */}
+            <h1 className="text-base font-semibold text-text-primary">{screenTitle}</h1>
           </div>
-          
-          <div className="flex items-center gap-16">
-            {/* Notification trigger dropdown */}
-            <div className="relative" ref={dropdownRef}>
-              <button 
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="p-8 text-text-secondary hover:text-accent hover:bg-surface-sunken rounded relative flex items-center justify-center transition-colors focus:outline-none"
-                title="Notifications"
-              >
-                <Bell className="w-20 h-20" />
-                {unreadCount > 0 && (
-                  <span className="absolute top-4 right-4 w-8 h-8 bg-alert rounded-full flex items-center justify-center shadow-sm">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-alert opacity-75"></span>
-                  </span>
-                )}
-              </button>
 
-              {isDropdownOpen && (
-                <div className="absolute right-0 mt-8 w-[320px] bg-surface border border-border rounded shadow-xl z-50 overflow-hidden flex flex-col max-h-[400px] animate-scale-up">
-                  {/* Dropdown Header */}
-                  <div className="px-16 py-12 border-b border-border flex items-center justify-between bg-surface-sunken">
-                    <span className="text-[11px] font-bold text-text-primary">Notifications ({notifications.length})</span>
-                    {unreadCount > 0 && (
-                      <button 
-                        onClick={handleMarkAllAsRead}
-                        className="text-[10px] text-accent hover:text-accent-hover font-semibold flex items-center gap-4 focus:outline-none"
-                      >
-                        <CheckCheck className="w-12 h-12" />
-                        <span>Mark all read</span>
-                      </button>
-                    )}
-                  </div>
+          <div className="flex items-center gap-4">
+            <NotificationDropdown
+              notifications={notifications}
+              unreadCount={unreadCount}
+              isOpen={isNotifOpen}
+              onToggle={() => setIsNotifOpen(v => !v)}
+              onMarkRead={handleMarkRead}
+              onMarkAllRead={handleMarkAllRead}
+              dropdownRef={dropdownRef}
+            />
 
-                  {/* Dropdown List */}
-                  <div className="overflow-y-auto divide-y divide-border">
-                    {notifications.length === 0 ? (
-                      <div className="p-24 text-center text-xs text-text-muted italic">
-                        No notifications yet.
-                      </div>
-                    ) : (
-                      notifications.map((n) => (
-                        <div 
-                          key={n.id} 
-                          onClick={() => !n.isRead && handleMarkAsRead(n.id)}
-                          className={`p-12 hover:bg-surface-sunken/40 transition-colors cursor-pointer text-xs flex gap-8 items-start ${
-                            !n.isRead ? 'bg-accent-subtle/50 font-semibold' : ''
-                          }`}
-                        >
-                          {!n.isRead && (
-                            <span className="w-6 h-6 mt-6 bg-accent rounded-full shrink-0"></span>
-                          )}
-                          <div className="space-y-4 flex-1">
-                            <p className="text-text-primary leading-snug">{n.message}</p>
-                            <p className="text-[10px] text-text-muted">
-                              {new Date(n.createdAt).toLocaleDateString()} at {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            </p>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="h-20 w-1 bg-border"></div>
-
-            <div className="flex items-center gap-8 text-xs font-bold text-text-secondary">
-              <User className="w-16 h-16 text-text-muted" />
-              <span>{user?.email || 'Not logged in'}</span>
+            <div className="hidden sm:flex items-center gap-2 text-xs text-text-secondary">
+              <span className="font-medium text-text-primary">{user?.name}</span>
+              <span className="text-text-muted">·</span>
+              <span>{user?.role}</span>
             </div>
           </div>
         </header>
 
-        {/* Screen Content */}
-        <main className="flex-1 overflow-auto p-24 bg-bg relative z-10">
-          <div className="max-w-[1280px] mx-auto animate-slide-up">
+        {/* ── Content area ── */}
+        <main className="flex-1 overflow-auto bg-bg">
+          <div className="max-w-content mx-auto px-6 py-6 md:px-6 animate-slide-up">
             <Outlet />
           </div>
         </main>
+
       </div>
     </div>
   );
