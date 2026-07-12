@@ -1,4 +1,5 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../lib/AuthContext';
 import { 
   LayoutDashboard, 
   Settings, 
@@ -15,14 +16,7 @@ import {
 export default function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Temporary stub user
-  const user = {
-    name: 'Akshay Kumar',
-    email: 'admin@assetflow.dev',
-    role: 'Admin',
-    department: 'IT Operations'
-  };
+  const { user, logout } = useAuth();
 
   const navItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
@@ -34,7 +28,13 @@ export default function Layout() {
     { name: 'Reports', path: '/reports', icon: BarChart3 },
   ];
 
+  // Only allow Admins to see the Organization Setup navigation item
+  const visibleNavItems = navItems.filter(
+    (item) => item.path !== '/org-setup' || user?.role === 'Admin'
+  );
+
   const handleLogout = () => {
+    logout();
     navigate('/login');
   };
 
@@ -52,7 +52,7 @@ export default function Layout() {
 
         {/* Navigation Links */}
         <nav className="flex-1 px-12 py-16 space-y-4 overflow-y-auto">
-          {navItems.map((item) => {
+          {visibleNavItems.map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
             return (
@@ -76,11 +76,11 @@ export default function Layout() {
         <div className="p-16 border-t border-border bg-surface-sunken">
           <div className="flex items-center gap-12 mb-12">
             <div className="w-32 h-32 rounded-full bg-accent text-white flex items-center justify-center font-semibold text-sm">
-              {user.name.charAt(0)}
+              {user?.name?.charAt(0) || 'U'}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-text-primary truncate">{user.name}</p>
-              <p className="text-xs text-text-muted truncate">{user.role}</p>
+              <p className="text-sm font-semibold text-text-primary truncate">{user?.name || 'User'}</p>
+              <p className="text-xs text-text-muted truncate">{user?.role || 'Guest'}</p>
             </div>
           </div>
           <button 
@@ -112,7 +112,7 @@ export default function Layout() {
 
             <div className="flex items-center gap-8 text-sm text-text-secondary">
               <User className="w-16 h-16" />
-              <span>{user.email}</span>
+              <span>{user?.email || 'Not logged in'}</span>
             </div>
           </div>
         </header>

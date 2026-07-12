@@ -6,6 +6,10 @@ import { z } from 'zod';
 import authRouter from './modules/auth/routes';
 import departmentRouter from './modules/departments/routes';
 import categoryRouter from './modules/categories/routes';
+import userRouter from './modules/users/routes';
+import assetRouter from './modules/assets/routes';
+import allocationRouter from './modules/allocations/routes';
+import transferRouter from './modules/transfers/routes';
 
 const app = express();
 
@@ -16,6 +20,10 @@ app.use(express.json());
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/departments', departmentRouter);
 app.use('/api/v1/categories', categoryRouter);
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/assets', assetRouter);
+app.use('/api/v1/allocations', allocationRouter);
+app.use('/api/v1/transfers', transferRouter);
 
 // Health check endpoint
 app.get('/api/health', (req: Request, res: Response) => {

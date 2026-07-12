@@ -26,6 +26,29 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+import OrganizationSetup from './modules/org-setup/OrganizationSetup';
+import AssetDirectory from './modules/assets/AssetDirectory';
+import AssetDetail from './modules/assets/AssetDetail';
+
+// Protected Admin Route Guard
+function AdminRoute({ children }: { children: React.ReactNode }) {
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen w-screen flex items-center justify-center bg-bg">
+        <div className="text-sm font-semibold text-text-secondary">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || user?.role !== 'Admin') {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
+}
+
 // Temporary stubs for other pages to prevent router crashes on navigation
 const TempPlaceholder = ({ title }: { title: string }) => (
   <div className="p-24 bg-surface border border-border rounded">
@@ -61,7 +84,11 @@ export const router = createBrowserRouter([
       },
       {
         path: 'assets',
-        element: <TempPlaceholder title="Assets Directory" />,
+        element: <AssetDirectory />,
+      },
+      {
+        path: 'assets/:id',
+        element: <AssetDetail />,
       },
       {
         path: 'bookings',
@@ -77,7 +104,11 @@ export const router = createBrowserRouter([
       },
       {
         path: 'org-setup',
-        element: <TempPlaceholder title="Organization Setup" />,
+        element: (
+          <AdminRoute>
+            <OrganizationSetup />
+          </AdminRoute>
+        ),
       },
       {
         path: 'reports',
