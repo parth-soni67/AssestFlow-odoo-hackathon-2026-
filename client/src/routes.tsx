@@ -57,6 +57,8 @@ const TempPlaceholder = ({ title }: { title: string }) => (
   </div>
 );
 
+import BookingsCalendar from './modules/bookings/BookingsCalendar';
+
 export const router = createBrowserRouter([
   {
     path: '/login',
@@ -92,7 +94,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'bookings',
-        element: <TempPlaceholder title="Resource Booking" />,
+        element: <BookingsCalendar />,
       },
       {
         path: 'maintenance',

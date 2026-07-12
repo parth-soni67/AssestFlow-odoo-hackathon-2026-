@@ -10,6 +10,9 @@ import userRouter from './modules/users/routes';
 import assetRouter from './modules/assets/routes';
 import allocationRouter from './modules/allocations/routes';
 import transferRouter from './modules/transfers/routes';
+import bookingRouter from './modules/bookings/routes';
+import maintenanceRouter from './modules/maintenance/routes';
+import auditRouter from './modules/audits/routes';
 
 const app = express();
 
@@ -24,6 +27,9 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/assets', assetRouter);
 app.use('/api/v1/allocations', allocationRouter);
 app.use('/api/v1/transfers', transferRouter);
+app.use('/api/v1/bookings', bookingRouter);
+app.use('/api/v1/maintenance', maintenanceRouter);
+app.use('/api/v1/audits', auditRouter);
 
 // Health check endpoint
 app.get('/api/health', (req: Request, res: Response) => {
@@ -63,6 +69,33 @@ app.get('/api/test-error', (req: Request, res: Response, next: NextFunction) => 
 // Apply custom centralized error handler middleware
 app.use(errorHandler);
 
+import { flagOverdueAllocations } from './modules/allocations/service';
+import { sendBookingReminders } from './modules/bookings/service';
+
 app.listen(env.PORT, () => {
   console.log(`Server is running on port ${env.PORT}`);
+
+  // Setup background overdue scanner (runs every 5 minutes)
+  setInterval(async () => {
+    try {
+      const result = await flagOverdueAllocations();
+      if (result.count > 0) {
+        console.log(`[CRON] Auto-flagged ${result.count} overdue allocations.`);
+      }
+    } catch (err) {
+      console.error('[CRON Error] Failed to scan overdue allocations:', err);
+    }
+  }, 1000 * 60 * 5);
+
+  // Setup background booking reminders scanner (runs every 5 minutes)
+  setInterval(async () => {
+    try {
+      const result = await sendBookingReminders();
+      if (result.count > 0) {
+        console.log(`[CRON] Dispatched ${result.count} upcoming booking reminders.`);
+      }
+    } catch (err) {
+      console.error('[CRON Error] Failed to scan booking reminders:', err);
+    }
+  }, 1000 * 60 * 5);
 });

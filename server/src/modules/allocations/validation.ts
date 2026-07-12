@@ -15,3 +15,10 @@ export const createAllocationSchema = z.object({
 });
 
 export type CreateAllocationDto = z.infer<typeof createAllocationSchema>;
+
+export const returnAllocationSchema = z.object({
+  returnConditionNotes: z.string().trim().max(1000).optional().nullable(),
+  condition: z.string().trim().optional().nullable(),
+});
+
+export type ReturnAllocationDto = z.infer<typeof returnAllocationSchema>;

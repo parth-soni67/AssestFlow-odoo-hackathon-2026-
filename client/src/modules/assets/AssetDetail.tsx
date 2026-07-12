@@ -20,8 +20,8 @@ interface Allocation {
 interface MaintenanceRequest {
   id: number;
   issueDescription: string;
-  priority: 'Low' | 'Medium' | 'High';
-  status: 'Pending' | 'Approved' | 'Underway' | 'Resolved' | 'Rejected';
+  priority: 'Low' | 'Medium' | 'High' | 'Critical';
+  status: 'Pending' | 'Approved' | 'Rejected' | 'TechnicianAssigned' | 'InProgress' | 'Resolved';
   assignedTechnician: string | null;
   createdAt: string;
   raisedBy: { id: number; name: string };
@@ -358,7 +358,7 @@ export default function AssetDetail() {
                         <td className="p-16 text-right">
                           <span className={`inline-block text-[10px] px-8 py-2 font-bold rounded-full border ${
                             req.status === 'Resolved' ? 'bg-[#E6F6EE] text-[#1E8E5A] border-[#1E8E5A]/25' :
-                            req.status === 'Underway' || req.status === 'Approved' ? 'bg-[#EBF3FC] text-[#2F5DE0] border-[#2F5DE0]/25' :
+                            req.status === 'Approved' || req.status === 'TechnicianAssigned' || req.status === 'InProgress' ? 'bg-[#EBF3FC] text-[#2F5DE0] border-[#2F5DE0]/25' :
                             req.status === 'Pending' ? 'bg-[#FFF9E6] text-[#B78103] border-[#B78103]/25' :
                             'bg-[#FBEAE9] text-[#C1352E] border-[#C1352E]/25'
                           }`}>

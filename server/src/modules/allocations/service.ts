@@ -1,6 +1,6 @@
 import { prisma } from '../../lib/prisma';
 import { AppError } from '../../middleware/errorHandler';
-import { CreateAllocationDto } from './validation';
+import { CreateAllocationDto, ReturnAllocationDto } from './validation';
 import { AssetStatus, AllocationStatus } from '@prisma/client';
 
 export const allocateAsset = async (dto: CreateAllocationDto) => {
@@ -89,4 +89,63 @@ export const allocateAsset = async (dto: CreateAllocationDto) => {
 
     return { allocation, asset: updatedAsset };
   });
+};
+
+export const returnAsset = async (id: number, dto: ReturnAllocationDto) => {
+  return await prisma.$transaction(async (tx) => {
+    // 1. Fetch the target allocation
+    const allocation = await tx.allocation.findUnique({
+      where: { id }
+    });
+
+    if (!allocation) {
+      throw new AppError(404, 'ALLOCATION_NOT_FOUND', 'Allocation record not found.');
+    }
+
+    if (allocation.status === AllocationStatus.Returned) {
+      throw new AppError(400, 'ALLOCATION_ALREADY_RETURNED', 'This allocation has already been checked in.');
+    }
+
+    // 2. Update allocation record
+    const updatedAllocation = await tx.allocation.update({
+      where: { id },
+      data: {
+        status: AllocationStatus.Returned,
+        actualReturnDate: new Date(),
+        returnConditionNotes: dto.returnConditionNotes || null
+      },
+      include: {
+        employee: { select: { id: true, name: true, email: true } },
+        department: { select: { id: true, name: true } }
+      }
+    });
+
+    // 3. Update asset status to Available and clear assignee refs
+    const updatedAsset = await tx.asset.update({
+      where: { id: allocation.assetId },
+      data: {
+        status: AssetStatus.Available,
+        currentHolderId: null,
+        currentDepartmentId: null,
+        condition: dto.condition || undefined
+      }
+    });
+
+    return { allocation: updatedAllocation, asset: updatedAsset };
+  });
+};
+
+export const flagOverdueAllocations = async () => {
+  const result = await prisma.allocation.updateMany({
+    where: {
+      status: AllocationStatus.Active,
+      expectedReturnDate: {
+        lt: new Date()
+      }
+    },
+    data: {
+      status: AllocationStatus.Overdue
+    }
+  });
+  return { count: result.count };
 };
